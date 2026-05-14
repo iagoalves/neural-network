@@ -1,0 +1,75 @@
+/* ─── Google Fonts ───────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700;0,9..40,900;1,9..40,400&display=swap');
+
+/* ─── Design tokens ──────────────────────────────────────────────────────── */
+:root {
+  --font-sans: 'DM Sans', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'DM Mono', 'Fira Code', monospace;
+
+  --bg:           #f0f4ff;
+  --surface:      #ffffff;
+  --surface-alt:  #f7f9ff;
+  --line:         #d8e0f0;
+  --line-strong:  #b8c4e0;
+  --muted:        #6b7a99;
+  --fg:           #0f1629;
+  --fg-soft:      #3a4460;
+
+  --accent:       #2251e8;
+  --accent-soft:  #e0e9ff;
+  --accent-mid:   #4169f0;
+  --accent-glow:  rgba(34, 81, 232, 0.14);
+
+  --red:          #dc2626;
+  --red-soft:     #fef0f0;
+  --red-line:     rgba(220, 38, 38, 0.22);
+
+  --green:        #16a34a;
+  --green-soft:   #f0fdf4;
+  --green-line:   rgba(22, 163, 74, 0.28);
+
+  --shadow-sm:    0 2px 8px rgba(15, 23, 66, 0.06);
+  --shadow:       0 8px 32px rgba(15, 23, 66, 0.09);
+  --shadow-lg:    0 20px 56px rgba(15, 23, 66, 0.12);
+
+  --radius-sm:    10px;
+  --radius:       18px;
+  --radius-lg:    26px;
+  --radius-xl:    32px;
+}
+
+/* ─── Reset ──────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  color: var(--fg);
+  background:
+    radial-gradient(ellipse 80% 50% at 0% 0%, rgba(34, 81, 232, 0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(99, 50, 220, 0.07) 0%, transparent 55%),
+    var(--bg);
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+}
+button, input, textarea { font: inherit; }
+button { cursor: pointer; }
+h1, h2, h3, h4 { letter-spacing: -0.03em; }
+
+/* ─── Animations ─────────────────────────────────────────────────────────── */
+@keyframes fadeSlideDown {
+  from { opacity: 0; transform: translateY(-14px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

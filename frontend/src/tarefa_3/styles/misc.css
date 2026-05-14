@@ -1,0 +1,23 @@
+/* ─── Modal ──────────────────────────────────────────────────────────────── */
+.modal-backdrop { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; padding: 20px; background: rgba(10,16,50,0.6); backdrop-filter: blur(6px); }
+.modal-card { width: min(500px,100%); display: grid; gap: 14px; border: 1px solid var(--line); border-radius: var(--radius-xl); background: #fff; box-shadow: var(--shadow-lg); padding: 24px; }
+.modal-card h3 { margin: 0; }
+.modal-card p  { margin: 0; color: var(--muted); line-height: 1.6; }
+.modal-actions { display: flex; justify-content: flex-end; }
+
+/* ─── Misc ───────────────────────────────────────────────────────────────── */
+.csv-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.csv-box { margin: 0; white-space: pre-wrap; overflow: auto; max-height: 440px; border-radius: var(--radius); background: var(--fg); color: #e2e8f0; padding: 18px; font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.5; }
+.plane-card { border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow-sm); padding: 18px; display: grid; gap: 12px; }
+.plane-card h3 { margin: 0; }
+.plane-card p  { margin: 0; color: var(--muted); }
+.decision-plane { position: relative; width: 100%; min-height: 360px; overflow: hidden; border-radius: var(--radius); background: linear-gradient(135deg, rgba(34,81,232,0.06), rgba(220,38,38,0.06)), #f8fafd; border: 1px solid var(--line); }
+.decision-plane::before { content: ''; position: absolute; left: 10%; right: 10%; bottom: 12%; height: 1px; background: var(--line-strong); }
+.decision-plane::after  { content: ''; position: absolute; left: 10%; top: 10%; bottom: 12%; width: 1px; background: var(--line-strong); }
+.decision-plane__line { position: absolute; left: 4%; top: 73%; width: 130%; height: 2px; background: var(--fg); transform: rotate(-43deg); transform-origin: left center; opacity: 0.7; }
+.plane-region { position: absolute; z-index: 2; border-radius: 999px; padding: 5px 10px; background: rgba(255,255,255,0.85); color: var(--fg); font-weight: 700; font-size: 0.78rem; border: 1px solid var(--line); }
+.plane-region--x { right: 18px; bottom: 18px; color: var(--accent); }
+.plane-region--t { left: 18px; top: 18px; color: var(--red); }
+.plane-point { position: absolute; z-index: 3; transform: translate(-50%, -50%); min-width: 32px; min-height: 32px; display: grid; place-items: center; border-radius: 999px; color: white; font-size: 0.66rem; font-weight: 900; border: 2px solid white; box-shadow: var(--shadow); }
+.plane-point--x { background: var(--accent); }
+.plane-point--t { background: var(--red); }

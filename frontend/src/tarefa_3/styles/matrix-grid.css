@@ -1,0 +1,48 @@
+/* ─── Matrix cards ───────────────────────────────────────────────────────── */
+.matrix-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  padding: 18px;
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+.matrix-card--interactive { transition: transform 140ms, border-color 140ms, box-shadow 140ms; }
+.matrix-card--interactive:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.matrix-card--selected { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow), var(--shadow); }
+.matrix-card__button { width: 100%; border: 0; background: transparent; color: inherit; padding: 0; text-align: left; display: grid; gap: 14px; }
+.matrix-card--compact { border: 0; border-radius: 0; box-shadow: none; padding: 12px; }
+.matrix-card__header { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+.matrix-card__header strong { margin: 0; font-size: 0.95rem; color: var(--fg); }
+.matrix-card__header span  { color: var(--muted); font-weight: 700; font-size: 0.82rem; }
+.matrix-card__hint { color: var(--accent); font-weight: 700; font-size: 0.78rem; font-family: var(--font-mono); }
+
+.matrix-grid { display: grid; grid-template-columns: repeat(5, 42px); gap: 5px; justify-content: center; width: max-content; max-width: 100%; margin: 0 auto; }
+.matrix-cell { width: 42px; height: 42px; border: 1px solid rgba(15,22,66,0.18); display: grid; place-items: center; font-weight: 900; border-radius: 8px; font-size: 0.88rem; font-family: var(--font-mono); }
+.matrix-cell--positive { background: #0b1228; color: #fff; }
+.matrix-cell--negative { background: var(--surface); color: var(--fg); }
+.matrix-cell--zero     { background: #e8edf8; color: var(--muted); }
+
+.matrix-card--compact .matrix-grid { grid-template-columns: repeat(5, 30px); gap: 4px; }
+.matrix-card--compact .matrix-cell { width: 30px; height: 30px; border-radius: 6px; font-size: 0.72rem; }
+.matrix-card--compact .matrix-card__header strong { font-size: 0.88rem; }
+.matrix-card--compact .matrix-card__header span   { font-size: 0.72rem; }
+
+.sample-matrix-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+  transition: transform 140ms, border-color 140ms, box-shadow 140ms;
+}
+.sample-matrix-card--selected { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+.sample-matrix-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.sample-matrix-card__button { width: 100%; border: 0; background: transparent; color: inherit; padding: 0; text-align: left; display: grid; gap: 0; }
+.sample-matrix-card__meta { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; padding: 0 12px 12px; color: var(--muted); font-size: 0.78rem; font-family: var(--font-mono); }
+.sample-matrix-card__meta strong { color: var(--fg); }
+
+/* ─── Patterns grid ──────────────────────────────────────────────────────── */
+.patterns-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
+.patterns-grid--main { align-items: start; }

@@ -1,0 +1,31 @@
+/* ─── Score card ─────────────────────────────────────────────────────────── */
+.score-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  padding: 18px;
+  display: grid;
+  gap: 14px;
+  box-shadow: var(--shadow-sm);
+}
+.score-card--winner { border-color: #c7d9ff; box-shadow: 0 0 0 3px var(--accent-glow), var(--shadow-sm); }
+.score-card__header-box { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; align-items: center; }
+.score-card__eyebrow { grid-column: 1 / -1; color: var(--muted); font-size: 0.72rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--font-mono); }
+.score-card__title { font-weight: 700; font-size: 1.05rem; }
+.score-card__result { border-radius: 999px; background: var(--accent-soft); color: var(--accent); padding: 5px 12px; font-size: 0.78rem; font-weight: 900; font-family: var(--font-mono); }
+.score-card__values { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; font-size: 0.85rem; }
+.score-card__values span { border-radius: var(--radius-sm); background: var(--surface-alt); border: 1px solid var(--line); padding: 8px 10px; color: var(--muted); }
+.score-card__values strong { color: var(--fg); }
+.score-card__values--wide { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.score-card__details { display: grid; gap: 14px; border-top: 1px solid var(--line); padding-top: 14px; }
+.score-card__details p { margin: 0; color: var(--muted); font-size: 0.88rem; }
+.score-card__explanation { display: grid; gap: 6px; border-radius: var(--radius); background: var(--surface-alt); border: 1px solid var(--line); padding: 12px; }
+.score-card__explanation strong { color: var(--fg); font-size: 0.9rem; }
+.score-card__matrix-comparison { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; align-items: start; }
+.score-card__steps { display: grid; gap: 10px; }
+.score-card__step-row { display: grid; gap: 6px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); padding: 10px; }
+.score-card__step-row > strong { color: var(--fg-soft); font-size: 0.88rem; }
+.score-card__calc-list { display: grid; gap: 4px; }
+.score-card__calc-list code { display: block; color: #1e40af; font-weight: 500; border-bottom: 1px dashed var(--line); padding: 4px 0; line-height: 1.45; white-space: normal; font-family: var(--font-mono); font-size: 0.8rem; }
+.score-card__formula { display: grid; gap: 6px; border-radius: var(--radius); background: var(--fg); padding: 14px; overflow-x: auto; }
+.score-card__formula code { color: #93c5fd; font-weight: 500; line-height: 1.5; white-space: normal; font-family: var(--font-mono); font-size: 0.82rem; }

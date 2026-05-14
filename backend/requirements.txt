@@ -1,0 +1,8 @@
+# Python 3.14.x:
+# - FastAPI 0.136.1 declares Python 3.14 support on PyPI.
+# - Pydantic 2.13.x uses pydantic-core builds compatible with CPython 3.14.
+# - The --only-binary line prevents pip from trying to compile pydantic-core from Rust source.
+--only-binary=pydantic-core
+fastapi==0.136.1
+pydantic==2.13.4
+uvicorn==0.38.0

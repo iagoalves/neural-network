@@ -1,0 +1,133 @@
+/* ─── Training panel ─────────────────────────────────────────────────────── */
+.training-panel { display: grid; gap: 16px; }
+
+.training-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  padding: 22px;
+  display: grid;
+  gap: 18px;
+}
+.training-card__header { display: grid; gap: 8px; }
+.training-card__header h3 { margin: 0; font-size: 1.2rem; }
+.training-card__header p  { margin: 0; color: var(--muted); line-height: 1.6; }
+
+/* result card */
+.training-result-card {
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  display: grid;
+  gap: 14px;
+  animation: fadeSlideUp 0.3s ease both;
+}
+.training-result-card__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.training-result-card--success {
+  border: 1px solid var(--green-line);
+  background: var(--green-soft);
+}
+.training-result-card--error {
+  border: 1px solid var(--red-line);
+  background: var(--red-soft);
+}
+.training-result-card .tag {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.training-result-card--success .tag { background: #dcfce7; color: var(--green); }
+.training-result-card--error   .tag { background: #fee2e2; color: var(--red); }
+.training-result-card__message {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--fg-soft);
+  line-height: 1.6;
+}
+
+.training-result-card__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+}
+.training-result-card__stats span {
+  display: grid;
+  gap: 4px;
+  border: 1px solid rgba(22, 163, 74, 0.16);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.68);
+  padding: 10px 12px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.training-result-card__stats strong {
+  color: var(--fg);
+  font-size: 1.25rem;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* form */
+.training-form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+.training-form-grid--simple { grid-template-columns: minmax(200px, 320px); }
+.training-form-grid label { display: grid; gap: 6px; color: var(--fg-soft); font-size: 0.88rem; font-weight: 700; }
+.training-form-grid input {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-alt);
+  color: var(--fg);
+  padding: 10px 12px;
+  outline: none;
+  transition: border-color 150ms, box-shadow 150ms;
+}
+.training-form-grid input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.training-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.training-actions button,
+.csv-actions button,
+.program-actions button {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid var(--line); border-radius: 999px;
+  background: var(--surface); color: var(--fg-soft);
+  padding: 9px 16px; font-size: 0.88rem; font-weight: 700;
+  transition: background 150ms, color 150ms, border-color 150ms;
+}
+.training-actions button:hover,
+.csv-actions button:hover,
+.program-actions button:hover { background: var(--accent-soft); color: var(--accent); border-color: #c7d9ff; }
+.training-actions button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.run-button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  border: 0; border-radius: 999px;
+  background: var(--accent); color: #fff;
+  padding: 11px 22px; font-size: 0.92rem; font-weight: 800;
+  box-shadow: 0 4px 18px var(--accent-glow);
+  transition: background 150ms, box-shadow 150ms, transform 120ms;
+  width: fit-content;
+  justify-self: center;
+}
+.run-button:hover { background: var(--accent-mid); box-shadow: 0 6px 24px var(--accent-glow); }
+.run-button:active { transform: scale(0.97); }
+
+/* summary grid */
+.training-summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.training-summary-card {
+  display: grid; gap: 5px;
+  border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--surface-alt); padding: 14px;
+}
+.training-summary-card span { color: var(--muted); font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--font-mono); }
+.training-summary-card strong { font-size: 1.6rem; color: var(--fg); line-height: 1; }
+.training-summary-card small { color: var(--muted); font-size: 0.8rem; line-height: 1.4; }

@@ -1,0 +1,53 @@
+/* ─── Responsive: shell / hero / tabs ───────────────────────────────────── */
+@media (max-width: 820px) {
+  .app-shell { width: calc(100% - 28px); }
+  .hero { padding: 24px; }
+  .hero__content { grid-template-columns: 1fr; }
+  .neural-visual { min-height: 340px; }
+  .home-network__footer {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+  }
+}
+
+@media (max-width: 520px) {
+  .tabbar button { font-size: 0.82rem; padding: 9px 14px; }
+  .home-view__actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .home-route-card__top {
+    align-items: flex-start;
+  }
+}
+
+/* ─── Responsive: theory and pattern grids ─────────────────────────────── */
+@media (max-width: 820px) {
+  .patterns-grid { grid-template-columns: 1fr; }
+}
+
+/* ─── Responsive: matrices ─────────────────────────────────────────────── */
+@media (max-width: 820px) {
+  .matrix-grid { grid-template-columns: repeat(5, 36px); }
+  .matrix-cell { width: 36px; height: 36px; }
+  .matrix-card--compact .matrix-grid { grid-template-columns: repeat(5, 28px); }
+  .matrix-card--compact .matrix-cell { width: 28px; height: 28px; }
+}
+
+/* ─── Responsive: program view ─────────────────────────────────────────── */
+@media (max-width: 820px) {
+  .program-layout { grid-template-columns: 1fr; }
+  .editor-grid { grid-template-columns: repeat(5, 44px); }
+  .editor-cell { width: 44px; height: 44px; }
+  .prediction-summary-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+
+@media (max-width: 520px) {
+  .prediction-summary-grid { grid-template-columns: 1fr; }
+}
+
+/* ─── Responsive: score card ───────────────────────────────────────────── */
+@media (max-width: 820px) {
+  .score-card__values { grid-template-columns: 1fr; }
+}

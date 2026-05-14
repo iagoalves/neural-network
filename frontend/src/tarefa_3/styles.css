@@ -1,0 +1,15 @@
+@import './styles/base.css';
+@import './styles/navbar.css';
+@import './styles/shell.css';
+@import './styles/home-view.css';
+@import './styles/info-section.css';
+@import './styles/theory-view.css';
+@import './styles/decision-plane.css';
+@import './styles/training-view.css';
+@import './styles/matrix-grid.css';
+@import './styles/calculation-details.css';
+@import './styles/score-card.css';
+@import './styles/program-view.css';
+@import './styles/training-step-details.css';
+@import './styles/misc.css';
+@import './styles/responsive.css';
