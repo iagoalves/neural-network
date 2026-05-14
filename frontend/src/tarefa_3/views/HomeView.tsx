@@ -11,11 +11,11 @@ interface HomeViewProps {
 }
 
 const INPUT_NODES = [
-  { label: 'x1', x: 16, y: 18 },
-  { label: 'x9', x: 16, y: 34 },
-  { label: 'x13', x: 16, y: 50 },
-  { label: 'x19', x: 16, y: 66 },
-  { label: 'x25', x: 16, y: 82 },
+  { label: 'w1', x: 16, y: 18 },
+  { label: 'w2', x: 16, y: 34 },
+  { label: 'w3', x: 16, y: 50 },
+  { label: 'w4', x: 16, y: 66 },
+  { label: 'wn', x: 16, y: 82 },
 ] as const;
 
 const OUTPUT_NODES = [
@@ -85,14 +85,6 @@ export function HomeView({ content, activeData, onNavigate }: HomeViewProps) {
 
           <div className="home-hero__visual">
             <div className="neural-visual">
-              <div className="neural-visual__header">
-                <span className="tag">fluxo neural</span>
-                <strong>Entrada · soma · ativação · saída</strong>
-                <p>
-                  O diagrama resume o caminho que cada matriz percorre até virar uma decisão X ou T.
-                </p>
-              </div>
-
               <svg className="neural-visual__connections" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
                 {INPUT_NODES.map((node) => (
                   <line key={`input-${node.label}`} x1={node.x} y1={node.y} x2={50} y2={50} />
@@ -113,10 +105,10 @@ export function HomeView({ content, activeData, onNavigate }: HomeViewProps) {
                 </div>
               ))}
 
-              <div className="home-network__node home-network__node--core" style={{ left: '50%', top: '50%' }}>
-                <small>b</small>
+              <div className="home-network__node home-network__node--core" style={{ left: '50%', top: '48%' }}>
+                <small className="home-network__node-math">u</small>
                 <span>Σ</span>
-                <small>w·x</small>
+                <small className="home-network__node-math">xi·wi</small>
               </div>
 
               {OUTPUT_NODES.map((node) => (
@@ -126,13 +118,12 @@ export function HomeView({ content, activeData, onNavigate }: HomeViewProps) {
                   style={{ left: `${node.x}%`, top: `${node.y}%` }}
                 >
                   <strong>{node.label}</strong>
-                  <small>{node.label === 'X' ? 'ŷ = 1' : 'ŷ = -1'}</small>
+                  <small className="home-network__node-activation">{node.label === 'X' ? 'ŷ = 1' : 'ŷ = -1'}</small>
                 </div>
               ))}
 
-              <div className="home-network__footer">
+              <div className="home-network__formula" aria-hidden="true">
                 <strong>u = b + Σ(xi·wi)</strong>
-                <span>bias fixo · pesos aprendidos por Hebb simples</span>
               </div>
             </div>
           </div>
@@ -141,13 +132,13 @@ export function HomeView({ content, activeData, onNavigate }: HomeViewProps) {
 
       {liveStats && (
         <section className="theory-block home-stage home-view__stats">
-          <header className="theory-block__header">
+          <div className="home-stage__header">
             <span className="tag">estado atual</span>
             <h3>O que a rede já aprendeu</h3>
             <p>
               Estes valores vêm do backend atual e resumem o modelo treinado pela Regra de Hebb simples.
             </p>
-          </header>
+          </div>
 
           <div className="training-summary-grid">
             {liveStats.map((item) => (
@@ -162,11 +153,11 @@ export function HomeView({ content, activeData, onNavigate }: HomeViewProps) {
       )}
 
       <section className="theory-block home-stage">
-        <header className="theory-block__header">
+        <div className="home-stage__header">
           <span className="tag">mapa neural</span>
           <h3>{content.theory.headline}</h3>
           <p>{content.theory.intro}</p>
-        </header>
+        </div>
 
         <div className="formula-strip">
           <code>{content.theory.formula}</code>
@@ -185,13 +176,13 @@ export function HomeView({ content, activeData, onNavigate }: HomeViewProps) {
       </section>
 
       <section className="theory-block home-stage">
-        <header className="theory-block__header">
+        <div className="home-stage__header">
           <span className="tag">atalhos</span>
           <h3>Entradas rápidas para o trabalho</h3>
           <p>
             Use estes atalhos para sair da página inicial e entrar na área principal do perceptron.
           </p>
-        </header>
+        </div>
 
         <div className="home-route-grid">
           <button className="home-route-card home-route-card--treino" onClick={() => onNavigate('treino')} type="button">
@@ -224,13 +215,13 @@ export function HomeView({ content, activeData, onNavigate }: HomeViewProps) {
       </section>
 
       <section className="theory-block home-stage">
-        <header className="theory-block__header">
+        <div className="home-stage__header">
           <span className="tag">referência</span>
           <h3>Paleta do modelo</h3>
           <p>
             A rede trabalha com sinais bipolares. Estes valores ajudam a visualizar a decisão final do perceptron.
           </p>
-        </header>
+        </div>
 
         <div className="training-summary-grid">
           <article className="training-summary-card">
