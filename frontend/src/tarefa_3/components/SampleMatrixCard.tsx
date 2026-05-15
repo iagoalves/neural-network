@@ -1,6 +1,6 @@
-import { MatrixGrid } from './MatrixGrid';
+import { MatrixGrid } from '../../geral/components/MatrixGrid';
 import type { PredictionResult } from '../types/perceptron';
-import { formatNumber } from '../utils/formatNumber';
+import { formatNumber } from '../../geral/utils/formatNumber';
 
 interface SampleMatrixCardProps {
   readonly prediction: PredictionResult;

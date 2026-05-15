@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import { TrainingStepDetails } from '../components/TrainingStepDetails';
-import { MatrixGrid } from '../components/MatrixGrid';
+import { MatrixGrid } from '../../geral/components/MatrixGrid';
 import { DecisionPlane } from '../components/DecisionPlane';
-import { InfoSection } from '../components/InfoSection';
+import { InfoSection } from '../../geral/components/InfoSection';
 import { useSelectedPrediction } from '../hooks/useSelectedPrediction';
 import type { LearningContent, MatrixPattern, PredictionResult, SamplesResponse, TrainPerceptronResponse } from '../types/perceptron';
-import { formatNumber } from '../utils/formatNumber';
+import { formatNumber } from '../../geral/utils/formatNumber';
 
 interface TheoryViewProps {
   readonly content: LearningContent;
@@ -71,6 +71,7 @@ export function TheoryView({ content, activeData, predictions, weightsMatrix }: 
       <MatrixGrid
         compact
         hint="Clique para ver o treino completo"
+        key={pattern.id}
         matrix={pattern.matrix}
         onClick={() => selectTraining('Treino completo')}
         selected={selectedTraining?.id === pattern.id}
@@ -85,6 +86,7 @@ export function TheoryView({ content, activeData, predictions, weightsMatrix }: 
       <MatrixGrid
         compact
         hint="Clique para ver a classificação"
+        key={prediction.id}
         matrix={prediction.pattern.matrix}
         onClick={() => selectPrediction(prediction)}
         selected={selectedPrediction?.id === prediction.id}

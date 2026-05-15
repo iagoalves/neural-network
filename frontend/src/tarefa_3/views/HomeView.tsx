@@ -1,6 +1,6 @@
 import { ArrowRight, Binary, BookOpen, Play, SlidersHorizontal } from 'lucide-react';
 import type { LearningContent, SamplesResponse } from '../types/perceptron';
-import { formatNumber } from '../utils/formatNumber';
+import { formatNumber } from '../../geral/utils/formatNumber';
 
 type ProjectView = 'treino' | 'teoria' | 'programa';
 

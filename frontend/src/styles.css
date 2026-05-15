@@ -1,0 +1,218 @@
+@import './tarefa_3/styles.css';
+@import './tarefa_2/styles.css';
+
+:root {
+  scroll-padding-top: 92px;
+}
+
+.app-root {
+  min-height: 100vh;
+  padding-top: 76px;
+}
+
+.project-navbar {
+  backdrop-filter: blur(18px);
+  --bs-bg-opacity: 0.94;
+}
+
+.project-navbar__inner {
+  gap: 14px;
+}
+
+.project-navbar__menu {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  font-weight: 800;
+  padding-inline: 16px;
+}
+
+.project-navbar__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  border: 0;
+  background: transparent;
+  color: #111827;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+.project-navbar__brand:hover,
+.project-navbar__brand:focus-visible {
+  color: #2563eb;
+}
+
+.project-navbar__current {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #111827;
+  font-size: 0.9rem;
+}
+
+.project-offcanvas {
+  border-right: 0;
+  box-shadow: 24px 0 70px rgba(15, 23, 42, 0.22);
+}
+
+.project-offcanvas__header {
+  align-items: flex-start;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.28);
+  background:
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.12), transparent 34%),
+    #fff;
+}
+
+.project-offcanvas__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #2563eb;
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.project-offcanvas__body {
+  background: #f8fafc;
+}
+
+.project-offcanvas__intro {
+  color: #64748b;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+
+.project-offcanvas__list {
+  display: grid;
+  gap: 12px;
+}
+
+.project-offcanvas__item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  width: 100%;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 20px;
+  background: #fff;
+  color: #334155;
+  padding: 14px;
+  text-align: left;
+  box-shadow: 0 12px 35px rgba(15, 23, 42, 0.06);
+  transition: border-color 150ms ease, box-shadow 150ms ease, transform 120ms ease;
+}
+
+.project-offcanvas__item:hover,
+.project-offcanvas__item:focus-visible {
+  border-color: rgba(37, 99, 235, 0.42);
+  box-shadow: 0 16px 42px rgba(37, 99, 235, 0.14);
+  transform: translateY(-1px);
+}
+
+.project-offcanvas__item.active {
+  border-color: rgba(37, 99, 235, 0.5);
+  background: linear-gradient(135deg, #eff6ff, #fff);
+}
+
+.project-offcanvas__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 14px;
+  background: #e0edff;
+  color: #2563eb;
+}
+
+.project-offcanvas__item strong,
+.project-offcanvas__item small {
+  display: block;
+}
+
+.project-offcanvas__item strong {
+  color: #0f172a;
+  font-size: 0.98rem;
+}
+
+.project-offcanvas__item small {
+  color: #64748b;
+  line-height: 1.45;
+  margin-top: 3px;
+}
+
+.training-top-button {
+  position: fixed;
+  right: clamp(18px, 3vw, 34px);
+  bottom: clamp(18px, 3vw, 34px);
+  z-index: 1040;
+  display: inline-grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  border: 0;
+  border-radius: 22px;
+  background:
+    linear-gradient(135deg, rgba(37, 99, 235, 0.96), rgba(79, 70, 229, 0.96));
+  color: #fff;
+  box-shadow: 0 18px 45px rgba(37, 99, 235, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  transition: transform 140ms ease, box-shadow 140ms ease, filter 140ms ease;
+}
+
+.training-top-button:hover,
+.training-top-button:focus-visible {
+  transform: translateY(-3px);
+  filter: saturate(1.05);
+  box-shadow: 0 24px 56px rgba(37, 99, 235, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.34);
+}
+
+.training-top-button:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.training-top-button__icon {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.training-top-button__icon--hide {
+  transform: translate(-10px, 10px);
+  opacity: 0.72;
+}
+
+.training-top-button__icon--up {
+  transform: translate(5px, -5px);
+}
+
+@media (max-width: 640px) {
+  .app-root {
+    padding-top: 70px;
+  }
+
+  .project-navbar__brand span {
+    display: none;
+  }
+
+  .project-navbar__current strong {
+    display: none;
+  }
+
+  .project-navbar__menu {
+    padding-inline: 13px;
+  }
+
+  .training-top-button {
+    width: 52px;
+    height: 52px;
+    border-radius: 19px;
+  }
+}

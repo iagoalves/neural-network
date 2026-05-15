@@ -175,3 +175,112 @@ def csv_samples() -> PlainTextResponse:
 @app.get("/api/csv/predictions", response_class=PlainTextResponse)
 def csv_predictions() -> PlainTextResponse:
     return PlainTextResponse(app_service.predictions_csv(), media_type="text/csv; charset=utf-8")
+# ─── Trabalho 2 · Regra de Hebb para funções lógicas ────────────────────────
+from app.tarefa_2.content import LEARNING_CONTENT as TAREFA2_LEARNING_CONTENT
+from app.tarefa_2.domain.logic import build_all_functions
+from app.tarefa_2.schemas import (
+    FunctionsResponseSchema as Tarefa2FunctionsResponseSchema,
+    LearningContentSchema as Tarefa2LearningContentSchema,
+    ManualHebbPredictionRequestSchema,
+    ManualHebbPredictionResponseSchema,
+    TrainHebbRequestSchema,
+    TrainHebbResponseSchema,
+)
+from app.tarefa_2.services.csv_exporter import HebbLogicCsvExporter
+from app.tarefa_2.services.hebb_trainer import HebbLogicTrainer
+
+
+class Tarefa2ApplicationService:
+    """Orquestra a Tarefa 2 sem misturar a regra de Hebb com HTTP."""
+
+    def __init__(self) -> None:
+        self.csv_exporter = HebbLogicCsvExporter()
+        self.retrain(initial_bias=0, initial_weight=0)
+
+    def _summary(self) -> dict:
+        exact = [result.function.identifier for result in self.results if result.is_exact]
+        imperfect = [result.function.identifier for result in self.results if not result.is_exact]
+        return {
+            "totalFunctions": len(self.results),
+            "exactFunctions": len(exact),
+            "imperfectFunctions": len(imperfect),
+            "exactFunctionIds": exact,
+            "imperfectFunctionIds": imperfect,
+        }
+
+    def retrain(self, initial_bias: float, initial_weight: float) -> None:
+        self.trainer = HebbLogicTrainer(initial_bias=initial_bias, initial_weight=initial_weight)
+        self.results = self.trainer.train_all()
+
+    def train_payload(self, request: TrainHebbRequestSchema) -> dict:
+        self.retrain(initial_bias=request.initialBias, initial_weight=request.initialWeight)
+        return {
+            "results": [result.to_dict() for result in self.results],
+            "summary": self._summary(),
+            "trainingCsv": self.csv_exporter.training_to_csv(self.results),
+            "predictionsCsv": self.csv_exporter.predictions_to_csv(self.results),
+            "message": "Treino hebbiano concluído para F0...F15. As funções XOR e XNOR tendem a ficar imperfeitas em uma unidade linear simples.",
+        }
+
+    def functions_payload(self) -> dict:
+        return {"functions": [function.to_dict() for function in build_all_functions()]}
+
+    def predict_manual(self, request: ManualHebbPredictionRequestSchema) -> dict:
+        trainer = HebbLogicTrainer(initial_bias=request.initialBias, initial_weight=request.initialWeight)
+        result = trainer.train_by_index(request.functionIndex)
+        row_number = 1 + request.a * 2 + request.b
+        prediction = next(prediction for prediction in result.predictions if prediction.row.row == row_number)
+        return {"result": result.to_dict(), "prediction": prediction.to_dict()}
+
+    def functions_csv(self) -> str:
+        return self.csv_exporter.functions_to_csv(build_all_functions())
+
+    def training_csv(self) -> str:
+        return self.csv_exporter.training_to_csv(self.results)
+
+    def predictions_csv(self) -> str:
+        return self.csv_exporter.predictions_to_csv(self.results)
+
+
+tarefa2_service = Tarefa2ApplicationService()
+
+
+@app.get("/api/trabalho2/learning-content", response_model=Tarefa2LearningContentSchema)
+def tarefa2_learning_content() -> dict:
+    return TAREFA2_LEARNING_CONTENT
+
+
+@app.get("/api/trabalho2/functions", response_model=Tarefa2FunctionsResponseSchema)
+def tarefa2_functions() -> dict:
+    return tarefa2_service.functions_payload()
+
+
+@app.post("/api/trabalho2/train", response_model=TrainHebbResponseSchema)
+def tarefa2_train(request: TrainHebbRequestSchema) -> dict:
+    try:
+        return tarefa2_service.train_payload(request)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.post("/api/trabalho2/predict", response_model=ManualHebbPredictionResponseSchema)
+def tarefa2_predict(request: ManualHebbPredictionRequestSchema) -> dict:
+    try:
+        return tarefa2_service.predict_manual(request)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.get("/api/trabalho2/csv/functions", response_class=PlainTextResponse)
+def tarefa2_csv_functions() -> PlainTextResponse:
+    return PlainTextResponse(tarefa2_service.functions_csv(), media_type="text/csv; charset=utf-8")
+
+
+@app.get("/api/trabalho2/csv/training", response_class=PlainTextResponse)
+def tarefa2_csv_training() -> PlainTextResponse:
+    return PlainTextResponse(tarefa2_service.training_csv(), media_type="text/csv; charset=utf-8")
+
+
+@app.get("/api/trabalho2/csv/predictions", response_class=PlainTextResponse)
+def tarefa2_csv_predictions() -> PlainTextResponse:
+    return PlainTextResponse(tarefa2_service.predictions_csv(), media_type="text/csv; charset=utf-8")

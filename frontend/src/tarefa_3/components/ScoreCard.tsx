@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-import { MatrixGrid } from './MatrixGrid';
+import { MatrixGrid } from '../../geral/components/MatrixGrid';
 import type { ElementCalculation, PredictionResult } from '../types/perceptron';
-import { formatNumber } from '../utils/formatNumber';
+import { formatNumber } from '../../geral/utils/formatNumber';
 
 interface ScoreCardProps {
   readonly prediction: PredictionResult;

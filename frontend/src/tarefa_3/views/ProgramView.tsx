@@ -1,9 +1,9 @@
 import { Play, RotateCcw, Wand2 } from 'lucide-react';
-import { InfoSection } from '../components/InfoSection';
-import { MatrixGrid } from '../components/MatrixGrid';
+import { InfoSection } from '../../geral/components/InfoSection';
+import { MatrixGrid } from '../../geral/components/MatrixGrid';
 import { ProgramMatrixEditor } from '../components/ProgramMatrixEditor';
 import type { LearningContent, Matrix5x5, MatrixPattern, PredictionResult, SamplesResponse, TrainPerceptronResponse } from '../types/perceptron';
-import { formatNumber } from '../utils/formatNumber';
+import { formatNumber } from '../../geral/utils/formatNumber';
 
 const EMPTY_MATRIX: Matrix5x5 = [
   [-1, -1, -1, -1, -1],

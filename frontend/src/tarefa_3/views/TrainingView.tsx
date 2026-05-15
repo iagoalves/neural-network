@@ -1,4 +1,4 @@
-import { InfoSection } from '../components/InfoSection';
+import { InfoSection } from '../../geral/components/InfoSection';
 import { TrainingPanel } from '../components/TrainingPanel';
 import type { TrainPerceptronRequest, TrainPerceptronResponse } from '../types/perceptron';
 

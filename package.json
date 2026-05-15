@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "dev:backend": "cd backend && python -m app.main",
+    "dev:backend": "cd backend && python -m uvicorn app.main:app --host 0.0.0.0 --port 8787 --reload",
     "dev:frontend": "cd frontend && npm run dev",
     "install:all": "npm install && npm --prefix frontend install",
     "docker:up": "docker compose down --remove-orphans && docker compose up --build -d && echo \"Frontend de desenvolvimento: http://localhost:5173\" && echo \"Backend de desenvolvimento: http://localhost:8787/api/health\" && docker compose logs -f",

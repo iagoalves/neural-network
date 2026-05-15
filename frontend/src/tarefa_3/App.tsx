@@ -5,6 +5,7 @@ import { PerceptronApi } from './services/PerceptronApi';
 import { TrainingView } from './views/TrainingView';
 import { TheoryView } from './views/TheoryView';
 import { ProgramView } from './views/ProgramView';
+import { TrainingTopButton } from '../geral/components/TrainingTopButton';
 import type {
   LearningContent,
   Matrix5x5,
@@ -192,8 +193,8 @@ export function App() {
   }
 
   return (
-    <main className="app-shell">
-      <section className="hero">
+    <main className="app-shell app-shell--task3">
+      <section className="hero" id="trabalho3-painel-superior">
         <span className="hero__eyebrow"><Binary size={16} /> trabalho_3</span>
         <div className="hero__content">
           <div>
@@ -263,6 +264,8 @@ export function App() {
           onClearMatrix={clearMatrix}
         />
       )}
+
+      <TrainingTopButton targetId="trabalho3-painel-superior" scopeSelector=".app-shell--task3" />
 
       {modalMessage && (
         <div className="modal-backdrop" role="presentation">

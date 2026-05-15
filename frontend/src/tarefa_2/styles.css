@@ -1,0 +1,179 @@
+.logic-function-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.logic-function-grid--small {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 360px));
+}
+
+.logic-function-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+  transition: transform 140ms, border-color 140ms, box-shadow 140ms;
+}
+
+.logic-function-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.logic-function-card--selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow), var(--shadow-sm);
+}
+
+.logic-function-card button {
+  width: 100%;
+  display: grid;
+  gap: 12px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  padding: 14px;
+}
+
+.logic-function-card header {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.logic-function-card header div {
+  display: grid;
+  gap: 3px;
+}
+
+.logic-function-card header strong {
+  font-size: 1rem;
+  color: var(--fg);
+}
+
+.logic-function-card header small {
+  color: var(--muted);
+  font-family: var(--font-mono);
+}
+
+.logic-function-card__stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+}
+
+.truth-table {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-alt);
+}
+
+.truth-table table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 420px;
+}
+
+.truth-table--compact table {
+  min-width: 0;
+}
+
+.truth-table th,
+.truth-table td {
+  border-bottom: 1px solid var(--line);
+  padding: 8px 10px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+}
+
+.truth-table th {
+  background: var(--surface);
+  color: var(--fg-soft);
+  font-weight: 900;
+}
+
+.truth-table td small {
+  color: var(--muted);
+}
+
+.truth-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.logic-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 4px 9px;
+  font-size: 0.7rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.logic-pill--ok {
+  background: #dcfce7;
+  color: var(--green);
+}
+
+.logic-pill--fail {
+  background: #fee2e2;
+  color: var(--red);
+}
+
+.logic-warning-block {
+  border-color: var(--red-line) !important;
+  background: linear-gradient(135deg, #fff 0%, #fff1f2 100%) !important;
+}
+
+.logic-detail-card {
+  scroll-margin-top: 18px;
+}
+
+.logic-model-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.logic-select-label,
+.logic-toggle-grid label {
+  display: grid;
+  gap: 6px;
+  color: var(--fg-soft);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.logic-select-label select,
+.logic-toggle-grid select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-alt);
+  color: var(--fg);
+  padding: 10px 12px;
+  outline: none;
+}
+
+.logic-select-label select:focus,
+.logic-toggle-grid select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.logic-toggle-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}

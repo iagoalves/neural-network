@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 import type { PredictionResult } from '../types/perceptron';
-import { formatNumber } from '../utils/formatNumber';
+import { formatNumber } from '../../geral/utils/formatNumber';
 
 interface DecisionPlaneProps {
   readonly predictions: PredictionResult[];

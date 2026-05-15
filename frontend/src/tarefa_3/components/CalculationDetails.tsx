@@ -1,5 +1,5 @@
 import type { PredictionResult } from '../types/perceptron';
-import { formatNumber } from '../utils/formatNumber';
+import { formatNumber } from '../../geral/utils/formatNumber';
 
 interface CalculationDetailsProps {
   readonly prediction: PredictionResult;
