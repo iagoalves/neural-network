@@ -27,7 +27,7 @@ class PerceptronClassifier:
     Fluxo correto do exercício:
     1. A matriz 5x5 vira um vetor x com 25 entradas: x1, x2, ..., x25.
     2. O CSV de treino contém X com y=1 e T com y=-1.
-    3. O treino Hebb aprende w1, w2, ..., w25 e o bias a partir de amostras rotuladas.
+    3. O treino por correção de erro aprende w1, w2, ..., w25 a partir de amostras rotuladas; o bias é fixo e entra na ativação.
     4. A classificação usa u = b + soma(xi*wi).
     5. A função de ativação retorna y=1 para X e y=-1 para T.
     """

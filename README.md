@@ -1,39 +1,15 @@
-# trabalho_3 · Perceptron X/T com Regra de Hebb simples
+# trabalho_3 - Perceptron X/T com correção de erro
 
-Projeto em Python/FastAPI e React/Vite para demonstrar a Regra de Hebb simples em um perceptron bipolar.
+Projeto em Python/FastAPI e React/Vite para demonstrar um perceptron bipolar aplicado ao reconhecimento de X e T em matrizes 5x5.
 
-## Lógica usada
+## Lógica
 
 - Cada matriz 5x5 vira um vetor `x1...x25`.
-- `X_Principal` usa `y = 1`.
-- `T_Principal` usa `y = -1`.
-- Os pesos começam em zero.
-- O bias é configurável, mas fica fixo durante o treino.
-- O treino realiza uma única passagem:
-  - `wi ← wi + y·xi`
-- A classificação usa:
-  - `u = b + Σ(xi·wi)`
-  - `ŷ = 1` se `u >= 0`
-  - `ŷ = -1` se `u < 0`
-
-## Dados CSV
-
-Os padrões de treino e as amostras geradas por seed ficam em:
-
-- `backend/app/tarefa_3/data/training_patterns.csv`
-- `backend/app/tarefa_3/data/seed_samples.csv`
-
-`X1...X4` e `T1...T4` são usadas para verificar os pesos treinados; elas não participam do treino.
-
-## Rodar com Docker
-
-```bash
-docker compose up --build
-```
-
-Frontend: `http://localhost:5173`
-
-Backend: `http://localhost:8787`
+- Os pesos `w1...w25` começam com `0.001`.
+- O bias é fixo e configurável.
+- Para cada amostra rotulada, calcula-se `u = b + Σ(xi·wi)`.
+- A ativação retorna `ŷ = 1` se `u >= 0`, e `ŷ = -1` caso contrário.
+- Se houver erro, aplica-se a correção: `erro = y - ŷ`, `Δwi = erro·xi`, `wi ← wi + Δwi`.
 
 ## Rodar localmente
 
@@ -51,3 +27,16 @@ cd frontend
 npm install
 npm run dev
 ```
+
+Docker:
+
+```bash
+docker compose up --build
+```
+
+## Dados
+
+- `backend/app/tarefa_3/data/training_patterns.csv`: X_Principal e T_Principal usados no treino.
+- `backend/app/tarefa_3/data/verification_patterns.csv`: matrizes fixas usadas para verificação.
+- `backend/app/tarefa_3/data/generated_training_log.csv`: log CSV gerado pelo backend.
+- `backend/app/tarefa_3/data/generated_predictions.csv`: predições de referência.

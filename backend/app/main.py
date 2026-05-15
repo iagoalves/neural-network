@@ -21,7 +21,7 @@ from app.tarefa_3.schemas import (
 from app.tarefa_3.services.classifier import PerceptronClassifier
 from app.tarefa_3.services.csv_exporter import CsvExporter
 from app.tarefa_3.services.detailed_calculation import DetailedCalculationService
-from app.tarefa_3.services.simple_trainer import HebbSimpleTrainer
+from app.tarefa_3.services.error_correction_trainer import PerceptronErrorCorrectionTrainer
 
 
 class Tarefa3ApplicationService:
@@ -44,7 +44,7 @@ class Tarefa3ApplicationService:
         ]
 
     def _build_samples(self) -> list[MatrixPattern]:
-        """Amostras exibidas/verificadas: padrões principais + matrizes fixas geradas por seed."""
+        """Amostras exibidas/verificadas: padrões principais + matrizes fixas de verificação salvas em CSV."""
         return self.repository.get_all_for_verification()
 
     def _payload_from_samples(self) -> dict:
@@ -56,21 +56,21 @@ class Tarefa3ApplicationService:
         }
 
     def retrain(self, initial_bias: float) -> None:
-        """Executa somente o treino Hebb simples com X_Principal e T_Principal."""
+        """Executa o treino por correção de erro com X_Principal e T_Principal."""
         training_points = self._build_training_points()
-        trainer = HebbSimpleTrainer(initial_bias=initial_bias)
+        trainer = PerceptronErrorCorrectionTrainer(initial_bias=initial_bias, initial_weight=0.001, max_epochs=10)
         self.model = trainer.train(training_points)
         self.classifier = PerceptronClassifier(self.model)
         self.detail_service = DetailedCalculationService(self.classifier)
 
     def train_payload(self, request: TrainPerceptronRequestSchema) -> dict:
-        """Reexecuta o treino Hebb simples e devolve o CSV do passo a passo."""
+        """Reexecuta o treino por correção de erro e devolve o CSV do passo a passo."""
         self.retrain(initial_bias=request.initialBias)
         payload = self._payload_from_samples()
         return {
             **payload,
             "trainingCsv": self.csv_exporter.training_to_csv(self.model),
-            "message": "Treino Hebb simples concluído: uma passagem por X_Principal e T_Principal. O bias foi mantido fixo e somado diretamente na ativação.",
+            "message": "Treino por correção de erro concluído: pesos inicializados em 0.001, bias fixo e atualização somente quando há erro.",
         }
 
     def prediction_payload(self, pattern: MatrixPattern) -> dict:
@@ -105,9 +105,9 @@ class Tarefa3ApplicationService:
 
 
 app = FastAPI(
-    title="trabalho_3 - Perceptron X/T com Hebb simples",
-    version="6.0.0",
-    description="API FastAPI + Pydantic para a Tarefa 3 com Regra de Hebb simples.",
+    title="trabalho_3 - Perceptron X/T com correção de erro",
+    version="7.0.0",
+    description="API FastAPI + Pydantic para a Tarefa 3 com perceptron e correção de erro.",
 )
 
 app.add_middleware(

@@ -1,7 +1,5 @@
 @import './styles/base.css';
-@import './styles/navbar.css';
 @import './styles/shell.css';
-@import './styles/home-view.css';
 @import './styles/info-section.css';
 @import './styles/theory-view.css';
 @import './styles/decision-plane.css';

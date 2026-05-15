@@ -125,3 +125,9 @@
   text-transform: uppercase;
   font-family: var(--font-mono);
 }
+
+.hero-card--diagram { overflow: hidden; }
+.hero-diagram { width: 100%; min-height: 72px; display: block; margin-top: 2px; }
+.hero-diagram rect { fill: rgba(255,255,255,0.12); stroke: rgba(255,255,255,0.35); stroke-width: 1.5; }
+.hero-diagram path { stroke: rgba(255,255,255,0.5); stroke-width: 2; fill: none; marker-end: none; }
+.hero-diagram text { fill: rgba(255,255,255,0.82); font: 700 13px var(--font-mono); text-anchor: middle; dominant-baseline: middle; }

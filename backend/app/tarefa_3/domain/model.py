@@ -3,12 +3,12 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Literal
 
-TrainingMode = Literal["hebb"]
+TrainingMode = Literal["error_correction"]
 
 
 @dataclass(frozen=True)
 class TrainingPoint:
-    """Uma linha do treino Hebb.
+    """Uma linha do treino supervisionado do perceptron.
 
     Cada matriz 5x5 é achatada para 25 entradas x1...x25.
     O alvo bipolar segue a regra:
@@ -34,7 +34,7 @@ class TrainingPoint:
 
 @dataclass(frozen=True)
 class TrainingStep:
-    """Estado de uma amostra durante a aplicação da Regra de Hebb."""
+    """Estado de uma amostra durante a regra de correção de erro."""
 
     epoch: int
     sample_id: str
@@ -44,9 +44,14 @@ class TrainingStep:
     bias_before: float
     u_before: float
     y_before: int
+    error: int
     updated: bool
+    delta_weights: list[float]
     weights_after: list[float]
     bias_after: float
+    weighted_sum_after: float
+    u_after: float
+    y_after: int
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -58,19 +63,38 @@ class TrainingStep:
             "biasBefore": self.bias_before,
             "uBefore": self.u_before,
             "yBefore": self.y_before,
+            "error": self.error,
             "updated": self.updated,
+            "deltaWeights": self.delta_weights,
             "weightsAfter": self.weights_after,
             "biasAfter": self.bias_after,
+            "weightedSumAfter": self.weighted_sum_after,
+            "uAfter": self.u_after,
+            "yAfter": self.y_after,
         }
 
 
 @dataclass(frozen=True)
-class TrainedPerceptronModel:
-    """Modelo gerado por Hebb simples.
+class TrainingLog:
+    """Mensagem didática gerada durante o treinamento."""
 
-    Não há taxa de aprendizagem configurável nem repetição de épocas.
-    O treinamento aplica uma única passagem por X_Principal e T_Principal.
-    O bias é mantido fixo e somado diretamente durante a ativação.
+    level: str
+    message: str
+
+    def to_dict(self) -> dict[str, str]:
+        return {"level": self.level, "message": self.message}
+
+
+@dataclass(frozen=True)
+class TrainedPerceptronModel:
+    """Modelo treinado com a regra de correção de erro do perceptron.
+
+    - Os pesos começam em 0.001.
+    - O bias é fixo nesta implementação.
+    - A atualização só ocorre quando existe erro:
+      erro = y - y_hat
+      delta_wi = erro * xi
+      wi <- wi + delta_wi
     """
 
     weights: list[float]
@@ -79,6 +103,9 @@ class TrainedPerceptronModel:
     training_mode: TrainingMode
     training_points: list[TrainingPoint]
     training_steps: list[TrainingStep]
+    initial_weight: float
+    max_epochs: int
+    logs: list[TrainingLog]
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -88,4 +115,7 @@ class TrainedPerceptronModel:
             "trainingMode": self.training_mode,
             "trainingPoints": [point.to_dict() for point in self.training_points],
             "trainingSteps": [step.to_dict() for step in self.training_steps],
+            "initialWeight": self.initial_weight,
+            "maxEpochs": self.max_epochs,
+            "logs": [log.to_dict() for log in self.logs],
         }

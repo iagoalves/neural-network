@@ -7,7 +7,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 MatrixValue = Literal[1, -1]
 TargetValue = Literal[1, -1]
 PatternLabel = Literal["X", "T"]
-TrainingMode = Literal["hebb"]
+TrainingMode = Literal["error_correction"]
 Matrix5x5 = list[list[MatrixValue]]
 
 
@@ -43,9 +43,14 @@ class TrainingStepSchema(BaseModel):
     biasBefore: float
     uBefore: float
     yBefore: TargetValue
+    error: int
     updated: bool
+    deltaWeights: list[float]
     weightsAfter: list[float]
     biasAfter: float
+    weightedSumAfter: float
+    uAfter: float
+    yAfter: TargetValue
 
 
 class TrainedModelSchema(BaseModel):
@@ -55,6 +60,9 @@ class TrainedModelSchema(BaseModel):
     trainingMode: TrainingMode
     trainingPoints: list[TrainingPointSchema]
     trainingSteps: list[TrainingStepSchema]
+    initialWeight: float
+    maxEpochs: int
+    logs: list[dict[str, str]]
 
 
 class PredictionResultSchema(BaseModel):
@@ -83,12 +91,12 @@ class SamplesResponseSchema(BaseModel):
 
 
 class TrainPerceptronRequestSchema(BaseModel):
-    """Parâmetro controlável do treino Hebb simples."""
+    """Parâmetros controláveis do treino por correção de erro."""
 
     model_config = ConfigDict(extra="forbid")
 
     initialBias: int = Field(default=1, ge=-50, le=50)
-    mode: TrainingMode = Field(default="hebb")
+    mode: TrainingMode = Field(default="error_correction")
 
 
 class TrainPerceptronResponseSchema(SamplesResponseSchema):

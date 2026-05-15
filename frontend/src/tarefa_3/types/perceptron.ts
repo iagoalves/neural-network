@@ -2,7 +2,7 @@ export type MatrixValue = 1 | -1;
 export type Matrix5x5 = MatrixValue[][];
 export type TargetValue = 1 | -1;
 export type PatternLabel = 'X' | 'T';
-export type TrainingMode = 'hebb';
+export type TrainingMode = 'error_correction';
 
 export interface MatrixPattern {
   id: string;
@@ -36,9 +36,19 @@ export interface TrainingStep {
   biasBefore: number;
   uBefore: number;
   yBefore: TargetValue;
+  error: number;
   updated: boolean;
+  deltaWeights: number[];
   weightsAfter: number[];
   biasAfter: number;
+  weightedSumAfter: number;
+  uAfter: number;
+  yAfter: TargetValue;
+}
+
+export interface TrainingLog {
+  level: string;
+  message: string;
 }
 
 export interface TrainedModel {
@@ -48,6 +58,9 @@ export interface TrainedModel {
   trainingMode: TrainingMode;
   trainingPoints: TrainingPoint[];
   trainingSteps: TrainingStep[];
+  initialWeight: number;
+  maxEpochs: number;
+  logs: TrainingLog[];
 }
 
 export interface PredictionResult {

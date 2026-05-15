@@ -9,7 +9,7 @@ from app.tarefa_3.domain.prediction import PredictionResult
 
 
 class CsvExporter:
-    """Gera CSVs em memória para padrões, treino e predições."""
+    """Gera CSVs em memória para padrões, treino, logs e predições."""
 
     def patterns_to_csv(self, patterns: list[MatrixPattern]) -> str:
         output = io.StringIO()
@@ -28,37 +28,49 @@ class CsvExporter:
         feature_headers = [f"x{index}" for index in range(1, 26)]
 
         writer.writerow(["secao", "id", "classe", *feature_headers, "y"])
-
         for point in model.training_points:
             writer.writerow(["ponto_treino", point.identifier, point.label, *point.features, point.target])
 
         writer.writerow([])
-        writer.writerow(["secao", "id", *[f"w{index}" for index in range(1, 26)], "bias_fixo", "passagens"])
-        writer.writerow(["modelo_final", "pesos_treinados", *model.weights, model.bias, model.epochs])
+        writer.writerow(["secao", "id", *[f"w{index}" for index in range(1, 26)], "bias_fixo", "peso_inicial", "epocas_executadas", "epocas_maximas"])
+        writer.writerow(["modelo_final", "pesos_treinados", *model.weights, model.bias, model.initial_weight, model.epochs, model.max_epochs])
 
         writer.writerow([])
         writer.writerow([
             "secao",
-            "passo",
+            "epoca",
             "amostra",
             "target",
             "u_antes",
             "y_antes",
+            "erro",
+            "corrigiu",
+            "soma_apos",
+            "u_apos",
+            "y_apos",
             "bias_fixo",
-            "observacao",
         ])
 
-        for index, step in enumerate(model.training_steps, start=1):
+        for step in model.training_steps:
             writer.writerow([
-                "passo_hebb",
-                index,
+                "passo_correcao_erro",
+                step.epoch,
                 step.sample_id,
                 step.target,
                 step.u_before,
                 step.y_before,
-                step.bias_before,
-                "bias não é atualizado; entra direto em u = b + Σ(xi·wi)",
+                step.error,
+                step.updated,
+                step.weighted_sum_after,
+                step.u_after,
+                step.y_after,
+                step.bias_after,
             ])
+
+        writer.writerow([])
+        writer.writerow(["secao", "nivel", "mensagem"])
+        for log in model.logs:
+            writer.writerow(["log_treino", log.level, log.message])
 
         return output.getvalue()
 

@@ -1,0 +1,31 @@
+secao,id,classe,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,x16,x17,x18,x19,x20,x21,x22,x23,x24,x25,y
+ponto_treino,X_Principal,X,1,-1,-1,-1,1,-1,1,-1,1,-1,-1,-1,1,-1,-1,-1,1,-1,1,-1,1,-1,-1,-1,1,1
+ponto_treino,T_Principal,T,1,1,1,1,1,-1,-1,1,-1,-1,-1,-1,1,-1,-1,-1,-1,1,-1,-1,-1,-1,1,-1,-1,-1
+
+secao,id,w1,w2,w3,w4,w5,w6,w7,w8,w9,w10,w11,w12,w13,w14,w15,w16,w17,w18,w19,w20,w21,w22,w23,w24,w25,bias_fixo,peso_inicial,epocas_executadas,epocas_maximas
+modelo_final,pesos_treinados,0.0009999999999998899,-3.999,-3.999,-3.999,0.0009999999999998899,0.0009999999999998899,4.0009999999999994,-3.999,4.0009999999999994,0.0009999999999998899,0.0009999999999998899,0.0009999999999998899,0.0009999999999998899,0.0009999999999998899,0.0009999999999998899,0.0009999999999998899,4.0009999999999994,-3.999,4.0009999999999994,0.0009999999999998899,4.0009999999999994,0.0009999999999998899,-3.999,0.0009999999999998899,4.0009999999999994,1,0.001,3,10
+
+secao,epoca,amostra,target,u_antes,y_antes,erro,corrigiu,soma_apos,u_apos,y_apos,bias_fixo
+passo_correcao_erro,1,X_Principal,1,0.993,1,0,False,-0.007,0.993,1,1
+passo_correcao_erro,1,T_Principal,-1,0.993,1,-2,True,-50.007,-49.007,-1,1
+passo_correcao_erro,2,X_Principal,1,-1.0069999999999992,-1,2,True,47.992999999999995,48.992999999999995,1,1
+passo_correcao_erro,2,T_Principal,-1,-47.007,-1,0,False,-48.007,-47.007,-1,1
+passo_correcao_erro,3,X_Principal,1,48.992999999999995,1,0,False,47.992999999999995,48.992999999999995,1,1
+passo_correcao_erro,3,T_Principal,-1,-47.007,-1,0,False,-48.007,-47.007,-1,1
+
+secao,nivel,mensagem
+log_treino,info,Pesos inicializados com 0.001 em todas as 25 posições.
+log_treino,info,Bias fixo configurado como 1.
+log_treino,info,Início da época 1.
+log_treino,success,"X_Principal: esperado y=1, obtido ŷ=1; sem correção."
+log_treino,warning,"T_Principal: esperado y=-1, obtido ŷ=1; erro=-2. Pesos corrigidos."
+log_treino,info,Fim da época 1: 1 erro(s).
+log_treino,info,Início da época 2.
+log_treino,warning,"X_Principal: esperado y=1, obtido ŷ=-1; erro=2. Pesos corrigidos."
+log_treino,success,"T_Principal: esperado y=-1, obtido ŷ=-1; sem correção."
+log_treino,info,Fim da época 2: 1 erro(s).
+log_treino,info,Início da época 3.
+log_treino,success,"X_Principal: esperado y=1, obtido ŷ=1; sem correção."
+log_treino,success,"T_Principal: esperado y=-1, obtido ŷ=-1; sem correção."
+log_treino,info,Fim da época 3: 0 erro(s).
+log_treino,success,Treino convergiu na época 3.

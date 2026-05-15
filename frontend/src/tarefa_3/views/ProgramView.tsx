@@ -43,11 +43,11 @@ export function ProgramView({
             <header className="program-output__header">
               <span className="tag">modelo ativo</span>
               <h3>Parâmetros usados</h3>
-              <p>O classificador manual usa os pesos treinados por Hebb simples.</p>
+              <p>O classificador manual usa os pesos treinados por correção de erro.</p>
             </header>
 
             <div className="training-summary-grid">
-              <article className="training-summary-card"><span>modo</span><strong>Hebb simples</strong><small>único modo desta versão</small></article>
+              <article className="training-summary-card"><span>modo</span><strong>Correção de erro</strong><small>supervisionado</small></article>
               <article className="training-summary-card"><span>bias fixo</span><strong>{formatNumber(activeData.model.bias)}</strong><small>somado em u</small></article>
               <article className="training-summary-card"><span>passagem</span><strong>{activeData.model.epochs}</strong><small>uma passagem</small></article>
               <article className="training-summary-card"><span>amostras de treino</span><strong>{activeData.model.trainingPoints.length}</strong><small>X e T principais</small></article>
@@ -75,7 +75,7 @@ export function ProgramView({
           <header className="program-output__header">
             <span className="tag">resultado</span>
             <h3>Classe prevista: {manualPrediction.predictedLabel}</h3>
-            <p>Resultado calculado com os pesos treinados pela Regra de Hebb simples.</p>
+            <p>Resultado calculado com os pesos treinados por correção de erro.</p>
           </header>
 
           <div className="prediction-summary-grid">

@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Binary, BookOpen, Home, Menu, Play, SlidersHorizontal } from 'lucide-react';
+import { Binary, BookOpen, Play, SlidersHorizontal } from 'lucide-react';
 import { fallbackContent } from './data/fallbackContent';
 import { PerceptronApi } from './services/PerceptronApi';
-import { HomeView } from './views/HomeView';
 import { TrainingView } from './views/TrainingView';
 import { TheoryView } from './views/TheoryView';
 import { ProgramView } from './views/ProgramView';
@@ -16,24 +15,7 @@ import type {
 } from './types/perceptron';
 import './styles.css';
 
-type ViewMode = 'inicio' | 'treino' | 'teoria' | 'programa';
-
-type ProjectView = Exclude<ViewMode, 'inicio'>;
-
-const NAV_ITEMS: Array<{
-  label: string;
-  view: ViewMode;
-  icon: typeof Home;
-}> = [
-  { label: 'Início', view: 'inicio', icon: Home },
-  { label: 'Treino', view: 'treino', icon: SlidersHorizontal },
-  { label: 'Teoria', view: 'teoria', icon: BookOpen },
-  { label: 'Programa', view: 'programa', icon: Play },
-];
-
-function isViewMode(value: unknown): value is ViewMode {
-  return value === 'inicio' || value === 'treino' || value === 'teoria' || value === 'programa';
-}
+type ViewMode = 'treino' | 'teoria' | 'programa';
 
 const api = new PerceptronApi();
 
@@ -46,13 +28,13 @@ const EMPTY_MATRIX: Matrix5x5 = [
 ];
 
 const STORAGE_KEYS = {
-  activeView: 'trabalho_3.hebb_simples.activeView',
-  trainingForm: 'trabalho_3.hebb_simples.trainingForm',
-  trainingResult: 'trabalho_3.hebb_simples.trainingResult',
-  trainingCsv: 'trabalho_3.hebb_simples.trainingCsv',
+  activeView: 'trabalho_3.error_correction.activeView',
+  trainingForm: 'trabalho_3.error_correction.trainingForm',
+  trainingResult: 'trabalho_3.error_correction.trainingResult',
+  trainingCsv: 'trabalho_3.error_correction.trainingCsv',
 } as const;
 
-const DEFAULT_TRAINING_FORM: TrainPerceptronRequest = { initialBias: 1, mode: 'hebb' };
+const DEFAULT_TRAINING_FORM: TrainPerceptronRequest = { initialBias: 1, mode: 'error_correction' };
 
 function readStorage<T>(key: string, fallback: T): T {
   try {
@@ -70,7 +52,7 @@ function writeStorage(key: string, value: unknown) {
 function normalizeForm(value: Partial<TrainPerceptronRequest> | null | undefined): TrainPerceptronRequest {
   return {
     initialBias: typeof value?.initialBias === 'number' ? value.initialBias : DEFAULT_TRAINING_FORM.initialBias,
-    mode: 'hebb',
+    mode: 'error_correction',
   };
 }
 
@@ -88,10 +70,9 @@ function weightsToMatrix(weights: number[]): number[][] {
 }
 
 export function App() {
-  const [activeView, setActiveViewState] = useState<ViewMode>(() => {
-    const cached = readStorage<unknown>(STORAGE_KEYS.activeView, 'inicio');
-    return isViewMode(cached) ? cached : 'inicio';
-  });
+  const [activeView, setActiveViewState] = useState<ViewMode>(() =>
+    readStorage<ViewMode>(STORAGE_KEYS.activeView, 'treino'),
+  );
   const [content, setContent] = useState<LearningContent>(fallbackContent);
   const [samplesData, setSamplesData] = useState<SamplesResponse | null>(null);
   const [manualPrediction, setManualPrediction] = useState<PredictionResult | null>(null);
@@ -100,21 +81,11 @@ export function App() {
   const [trainingForm, setTrainingForm] = useState<TrainPerceptronRequest>(DEFAULT_TRAINING_FORM);
   const [trainingResult, setTrainingResult] = useState<TrainPerceptronResponse | null>(null);
   const [trainingLoading, setTrainingLoading] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState<string | null>(null);
-
-  function scrollToTop() {
-    const prefersReducedMotion =
-      typeof window.matchMedia === 'function'
-        && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
-  }
 
   function setActiveView(next: ViewMode) {
     setActiveViewState(next);
     writeStorage(STORAGE_KEYS.activeView, next);
-    setMenuOpen(false);
-    scrollToTop();
   }
 
   function handleTrainingFormChange(next: TrainPerceptronRequest) {
@@ -165,33 +136,10 @@ export function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (!menuOpen) {
-      return;
-    }
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
-        setMenuOpen(false);
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [menuOpen]);
-
   const activeData = trainingResult ?? samplesData;
   const patterns = activeData?.samples ?? [];
   const predictions = activeData?.predictions ?? [];
   const weightsMatrix = useMemo(() => weightsToMatrix(activeData?.model.weights ?? []), [activeData]);
-  const isProjectView = activeView !== 'inicio';
 
   function loadPattern(label: 'X' | 'T') {
     const pattern =
@@ -244,126 +192,76 @@ export function App() {
   }
 
   return (
-    <main className="app-page">
-      <nav className="navbar app-navbar navbar-dark">
-        <div className="app-navbar__inner">
-          <button
-            className="app-navbar__brand"
-            aria-label="Voltar para a página inicial"
-            onClick={() => setActiveView('inicio')}
-            type="button"
-          >
-            <span className="app-navbar__brand-mark"><Binary size={18} /></span>
-            <span className="app-navbar__brand-copy">
-              <strong>trabalho_3</strong>
-              <small>perceptron X/T</small>
-            </span>
-          </button>
-
-          <div className="app-navbar__links" aria-label="Navegação principal" role="navigation">
-            {NAV_ITEMS.map((item) => {
-              const Icon = item.icon;
-
-              return (
-                <button
-                  aria-pressed={activeView === item.view}
-                  className={`nav-link app-navbar__link ${activeView === item.view ? 'active' : ''}`}
-                  key={item.view}
-                  onClick={() => setActiveView(item.view)}
-                  type="button"
-                >
-                  <Icon size={16} />
-                  <span>{item.label}</span>
-                </button>
-              );
-            })}
+    <main className="app-shell">
+      <section className="hero">
+        <span className="hero__eyebrow"><Binary size={16} /> trabalho_3</span>
+        <div className="hero__content">
+          <div>
+            <h1>{content.title}</h1>
+            <p>{content.summary}</p>
           </div>
-
-          <button
-            aria-controls="app-offcanvas"
-            aria-expanded={menuOpen}
-            aria-label="Abrir menu lateral"
-            className="btn btn-outline-light app-navbar__menu"
-            onClick={() => setMenuOpen(true)}
-            type="button"
-          >
-            <Menu size={18} />
-            <span>Menu</span>
-          </button>
+          <div className="hero__cards">
+            <article className="hero-card"><strong>Correção de erro</strong><span>Pesos iniciam em 0.001 e só mudam quando ŷ ≠ y.</span></article>
+            <article className="hero-card"><strong>25 entradas</strong><span>Cada matriz 5x5 vira x1...x25.</span></article>
+            <article className="hero-card hero-card--diagram">
+              <strong>Fluxo visual</strong>
+              <svg className="hero-diagram" viewBox="0 0 360 72" role="img" aria-label="Fluxo do perceptron com correção de erro">
+                <rect x="4" y="18" width="58" height="36" rx="10" />
+                <text x="33" y="41">x</text>
+                <path d="M68 36 H104" />
+                <rect x="108" y="18" width="88" height="36" rx="10" />
+                <text x="152" y="41">u</text>
+                <path d="M202 36 H238" />
+                <rect x="242" y="18" width="54" height="36" rx="10" />
+                <text x="269" y="41">ŷ</text>
+                <path d="M300 36 H340" />
+                <text x="156" y="12">b + Σxi·wi</text>
+                <text x="310" y="64">erro → Δw</text>
+              </svg>
+            </article>
+          </div>
         </div>
+      </section>
+
+      <nav className="tabbar" aria-label="Modos de visualização">
+        <button className={activeView === 'treino' ? 'active' : ''} onClick={() => setActiveView('treino')} type="button"><SlidersHorizontal size={16} /> Treino</button>
+        <button className={activeView === 'teoria' ? 'active' : ''} onClick={() => setActiveView('teoria')} type="button"><BookOpen size={16} /> Teórico</button>
+        <button className={activeView === 'programa' ? 'active' : ''} onClick={() => setActiveView('programa')} type="button"><Play size={16} /> Programa</button>
       </nav>
 
-      <div className="app-shell app-shell--content">
-        {status && <div className="status-box app-status">{status}</div>}
+      {status && <div className="status-box">{status}</div>}
 
-        {activeView === 'inicio' ? (
-          <HomeView content={content} activeData={activeData} onNavigate={setActiveView} />
-        ) : activeView === 'treino' ? (
-          <TrainingView
-            form={trainingForm}
-            result={trainingResult}
-            loading={trainingLoading}
-            onChange={handleTrainingFormChange}
-            onTrain={trainPerceptron}
-          />
-        ) : activeView === 'teoria' ? (
-          <TheoryView
-            content={content}
-            activeData={activeData}
-            predictions={predictions}
-            weightsMatrix={weightsMatrix}
-          />
-        ) : (
-          <ProgramView
-            content={content}
-            activeData={activeData}
-            patterns={patterns}
-            manualMatrix={manualMatrix}
-            manualPrediction={manualPrediction}
-            onMatrixChange={setManualMatrix}
-            onPredict={runManualPrediction}
-            onLoadPattern={loadPattern}
-            onClearMatrix={clearMatrix}
-          />
-        )}
-      </div>
+      {activeView === 'treino' && (
+        <TrainingView
+          form={trainingForm}
+          result={trainingResult}
+          loading={trainingLoading}
+          onChange={handleTrainingFormChange}
+          onTrain={trainPerceptron}
+        />
+      )}
 
-      {menuOpen && (
-        <>
-          <div className="offcanvas-backdrop fade show app-offcanvas__backdrop" onClick={() => setMenuOpen(false)} />
-          <aside
-            aria-labelledby="app-offcanvas-label"
-            aria-modal="true"
-            className="offcanvas offcanvas-start show app-offcanvas"
-            id="app-offcanvas"
-            role="dialog"
-            tabIndex={-1}
-          >
-            <div className="offcanvas-header app-offcanvas__header">
-              <div>
-                <span className="tag">menu</span>
-                <h2 id="app-offcanvas-label">Atalhos rápidos</h2>
-              </div>
-              <button
-                aria-label="Fechar menu"
-                className="btn-close btn-close-white"
-                onClick={() => setMenuOpen(false)}
-                type="button"
-              />
-            </div>
+      {activeView === 'teoria' && (
+        <TheoryView
+          content={content}
+          activeData={activeData}
+          predictions={predictions}
+          weightsMatrix={weightsMatrix}
+        />
+      )}
 
-            <div className="offcanvas-body app-offcanvas__body">
-              <button className={`app-offcanvas__link ${activeView === 'inicio' ? 'active' : ''}`} onClick={() => setActiveView('inicio')} type="button">
-                <Home size={18} />
-                <span>Início</span>
-              </button>
-              <button className={`app-offcanvas__link ${isProjectView ? 'active' : ''}`} onClick={() => setActiveView('treino')} type="button">
-                <Binary size={18} />
-                <span>trabalho3_xt</span>
-              </button>
-            </div>
-          </aside>
-        </>
+      {activeView === 'programa' && (
+        <ProgramView
+          content={content}
+          activeData={activeData}
+          patterns={patterns}
+          manualMatrix={manualMatrix}
+          manualPrediction={manualPrediction}
+          onMatrixChange={setManualMatrix}
+          onPredict={runManualPrediction}
+          onLoadPattern={loadPattern}
+          onClearMatrix={clearMatrix}
+        />
       )}
 
       {modalMessage && (

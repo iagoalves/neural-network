@@ -14,8 +14,8 @@ export function TrainingView({ form, result, loading, onChange, onTrain }: Train
   return (
     <InfoSection
       eyebrow="treino"
-      title="Treinamento Hebb simples"
-      description="Configure apenas o bias fixo e execute uma passagem pelos dois padrões principais."
+      title="Treinamento com correção de erro"
+      description="Configure o bias fixo e execute o treino supervisionado com pesos inicializados em 0.001."
     >
       <TrainingPanel
         form={form}

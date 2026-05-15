@@ -25,16 +25,14 @@ function downloadTextFile(filename: string, content: string) {
 }
 
 export function TrainingPanel({ form, onChange, onTrain, result, loading }: TrainingPanelProps) {
-
   return (
     <section className="training-panel">
       <article className="training-card">
         <header className="training-card__header">
-          <span className="tag">treino Hebb simples</span>
-          <h3>Treino com X_Principal e T_Principal</h3>
+          <span className="tag">treino supervisionado</span>
+          <h3>Correção de erro do perceptron</h3>
           <p>
-            Os pesos começam em zero. O treino faz uma única passagem por X_Principal e T_Principal, aplicando
-            diretamente <strong>wi ← wi + y·xi</strong>. O bias não é treinado: ele fica fixo e entra depois na ativação.
+            Os pesos começam em <strong>0.001</strong>. O sistema calcula <strong>u</strong>, compara a saída prevista com o alvo e corrige os pesos somente quando existe erro.
           </p>
         </header>
 
@@ -52,19 +50,20 @@ export function TrainingPanel({ form, onChange, onTrain, result, loading }: Trai
         </div>
 
         <div className="formula-strip">
-          <code>wi ← wi + y·xi</code>
-          <code>b fixo</code>
-          <code>uma passagem: X depois T</code>
+          <code>w inicial = 0.001</code>
+          <code>erro = y - ŷ</code>
+          <code>Δwi = erro·xi</code>
+          <code>wi ← wi + Δwi</code>
         </div>
 
         <div className="training-actions">
           <button className="run-button" onClick={onTrain} disabled={loading} type="button">
-            <RefreshCw size={16} /> {loading ? 'Treinando...' : 'Executar treino Hebb simples'}
+            <RefreshCw size={16} /> {loading ? 'Treinando...' : 'Executar treino'}
           </button>
 
           <button
             disabled={!result?.trainingCsv}
-            onClick={() => result?.trainingCsv && downloadTextFile('treino_hebb_simples_tarefa_3.csv', result.trainingCsv)}
+            onClick={() => result?.trainingCsv && downloadTextFile('treino_correcao_erro_tarefa_3.csv', result.trainingCsv)}
             type="button"
           >
             <Download size={16} /> Salvar CSV do treino
@@ -75,7 +74,7 @@ export function TrainingPanel({ form, onChange, onTrain, result, loading }: Trai
       {result && (
         <article className={`training-result-card training-result-card--${result.message ? 'success' : 'error'}`}>
           <div className="training-result-card__header">
-            <span className="tag">{result.message ? 'treino completo' : 'falha no treino'}</span>
+            <span className="tag">treino executado</span>
             <p className="training-result-card__message">
               {result.message ?? 'O treino não foi concluído. Verifique os parâmetros e tente novamente.'}
             </p>
@@ -87,15 +86,15 @@ export function TrainingPanel({ form, onChange, onTrain, result, loading }: Trai
               <strong>{result.model.bias}</strong>
             </span>
             <span>
-              passos Hebb
+              peso inicial
+              <strong>{result.model.initialWeight}</strong>
+            </span>
+            <span>
+              passos registrados
               <strong>{result.model.trainingSteps.length}</strong>
             </span>
             <span>
-              amostras de treino
-              <strong>{result.model.trainingPoints.length}</strong>
-            </span>
-            <span>
-              épocas
+              épocas executadas
               <strong>{result.model.epochs}</strong>
             </span>
           </div>

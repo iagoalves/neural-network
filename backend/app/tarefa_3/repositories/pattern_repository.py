@@ -68,21 +68,21 @@ class CsvPatternRepository:
 
 
 class TrainingPatternRepository(CsvPatternRepository):
-    """Repositório das amostras que participam do treino Hebb simples."""
+    """Repositório das amostras que participam do treino supervisionado."""
 
     def __init__(self) -> None:
         super().__init__(Path(__file__).resolve().parents[1] / "data" / "training_patterns.csv")
 
 
-class SeedSampleRepository(CsvPatternRepository):
-    """Repositório das matrizes fixas geradas previamente com seed.
+class VerificationPatternRepository(CsvPatternRepository):
+    """Repositório das matrizes fixas de verificação.
 
-    X1...X4 e T1...T4 são usadas para verificação visual do modelo treinado.
-    Elas não alteram os pesos no treino Hebb simples.
+    X1...X4 e T1...T4 foram pré-geradas e salvas em CSV.
+    Elas não participam do treino; servem para testar o modelo treinado.
     """
 
     def __init__(self) -> None:
-        super().__init__(Path(__file__).resolve().parents[1] / "data" / "seed_samples.csv")
+        super().__init__(Path(__file__).resolve().parents[1] / "data" / "verification_patterns.csv")
 
 
 class PatternRepository:
@@ -90,7 +90,7 @@ class PatternRepository:
 
     def __init__(self) -> None:
         self.training_patterns = TrainingPatternRepository()
-        self.seed_samples = SeedSampleRepository()
+        self.verification_patterns = VerificationPatternRepository()
 
     @property
     def pattern_x(self) -> MatrixPattern:
@@ -109,11 +109,11 @@ class PatternRepository:
     def get_training_patterns(self) -> list[MatrixPattern]:
         return self.training_patterns.get_all()
 
-    def get_seed_samples(self) -> list[MatrixPattern]:
-        return self.seed_samples.get_all()
+    def get_verification_patterns(self) -> list[MatrixPattern]:
+        return self.verification_patterns.get_all()
 
     def get_all(self) -> list[MatrixPattern]:
         return self.get_training_patterns()
 
     def get_all_for_verification(self) -> list[MatrixPattern]:
-        return self.get_seed_samples()
+        return self.get_verification_patterns()

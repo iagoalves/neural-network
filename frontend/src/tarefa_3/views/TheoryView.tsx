@@ -66,33 +66,17 @@ export function TheoryView({ content, activeData, predictions, weightsMatrix }: 
     [verificationPredictions],
   );
 
-  function renderTrainingCompleteCard() {
+  function renderTrainingMatrixCard(pattern: MatrixPattern) {
     return (
-      <button
-        className={`training-complete-card ${selectedTraining ? 'training-complete-card--selected' : ''}`}
-        onClick={() => selectTraining('Treino completo Hebb')}
-        type="button"
-      >
-        <header className="training-complete-card__header">
-          <span className="tag">treino completo</span>
-          <h4>X_Principal + T_Principal</h4>
-          <p>
-            Clique para ver a sequência completa da Regra de Hebb: primeiro X atualiza os pesos, depois T completa o vetor treinado.
-          </p>
-        </header>
-
-        <div className="training-complete-card__matrices">
-          {trainingPatterns.map((pattern) => (
-            <MatrixGrid
-              compact
-              key={pattern.id}
-              matrix={pattern.matrix}
-              subtitle={`y = ${pattern.target}`}
-              title={pattern.id}
-            />
-          ))}
-        </div>
-      </button>
+      <MatrixGrid
+        compact
+        hint="Clique para ver o treino completo"
+        matrix={pattern.matrix}
+        onClick={() => selectTraining('Treino completo')}
+        selected={selectedTraining?.id === pattern.id}
+        subtitle={`y = ${pattern.target}`}
+        title={pattern.id}
+      />
     );
   }
 
@@ -121,9 +105,9 @@ export function TheoryView({ content, activeData, predictions, weightsMatrix }: 
       <section className="theory-block theory-block--prose">
         <header className="theory-block__header">
           <span className="tag">o que o programa faz</span>
-          <h3>Treino Hebb simples com duas amostras</h3>
+          <h3>Treino supervisionado com correção de erro</h3>
           <p>
-            O treino usa apenas <strong>X_Principal</strong> e <strong>T_Principal</strong>. As demais matrizes ficam em CSV e servem para verificar o classificador treinado.
+            O treino usa <strong>X_Principal</strong> e <strong>T_Principal</strong>. Os pesos começam em <strong>0.001</strong>, o bias é fixo e os pesos só são corrigidos quando a predição diverge do rótulo esperado.
           </p>
         </header>
 
@@ -138,21 +122,16 @@ export function TheoryView({ content, activeData, predictions, weightsMatrix }: 
 
         <div className="theory-prose">
           <p>
-            Os pesos começam em zero. Na passagem por <strong>X_Principal</strong>, cada peso recebe a contribuição <strong>y·xi</strong> com <strong>y=1</strong>.
-            Isso faz o valor de <strong>xi</strong> entrar no peso com o mesmo sinal da amostra X. Na passagem por <strong>T_Principal</strong>, cada peso recebe a contribuição
-            <strong> y·xi</strong> com <strong>y=-1</strong>, então o mesmo <strong>xi</strong> passa a ser somado com sinal invertido.
+            O perceptron calcula <strong>u = b + Σ(xi·wi)</strong> e aplica a função de ativação. Se <strong>u ≥ 0</strong>, a saída prevista é <strong>ŷ=1</strong>; se <strong>u &lt; 0</strong>, a saída prevista é <strong>ŷ=-1</strong>.
           </p>
           <p>
-            Em termos práticos, <strong>y</strong> decide a direção da atualização: quando <strong>y=1</strong>, o padrão reforça os pesos nas posições em que X aparece; quando
-            <strong> y=-1</strong>, o padrão T empurra esses mesmos pesos para o lado oposto. Por isso o resultado final do treino pode ser escrito como
-            <strong> w = 0 + (1·X_Principal) + (-1·T_Principal)</strong>.
+            Durante o treino, compara-se a saída prevista <strong>ŷ</strong> com a saída esperada <strong>y</strong>. Quando há erro, calcula-se <strong>erro = y - ŷ</strong> e cada peso recebe a correção <strong>Δwi = erro·xi</strong>.
           </p>
           <p>
-            O bias é fixo e não altera os pesos. Ele entra somente na classificação, somando o mesmo valor ao resultado de todas as matrizes:
-            <strong> u = b + Σ(xi·wi)</strong>. Um bias maior desloca a fronteira para favorecer saídas positivas; um bias menor desloca a fronteira para favorecer saídas negativas.
+            O bias é fixo e não corrige os pesos. Ele é somado em <strong>u</strong>; portanto, aumentar o bias desloca as ativações para valores mais positivos e favorece classificações como X. Reduzir o bias desloca as ativações para valores mais negativos e favorece T.
           </p>
           <strong className="theory-prose__summary">
-            Depois do treino: se u≥0, a saída é X; se u&lt;0, a saída é T. Alterar o bias muda o valor final de u, mas não muda a matriz de pesos aprendida por Hebb.
+            Fórmula do treino: erro = y - ŷ; Δwi = erro·xi; wi ← wi + Δwi. A classificação final usa u = b + Σ(xi·wi).
           </strong>
         </div>
       </section>
@@ -161,17 +140,17 @@ export function TheoryView({ content, activeData, predictions, weightsMatrix }: 
         <section className="theory-block">
           <header className="theory-block__header">
             <span className="tag">modelo aprendido</span>
-            <h3>Pesos gerados pela Regra de Hebb</h3>
+            <h3>Pesos gerados pela correção de erro</h3>
             <p>
-              Os pesos são calculados em uma única passagem: w = 0 + (1·X_Principal) + (-1·T_Principal). O bias permanece fixo em <strong>{formatNumber(activeData.model.bias)}</strong> e só entra na classificação.
+              Os pesos começam em <strong>{formatNumber(activeData.model.initialWeight)}</strong> e são corrigidos somente quando existe erro. O bias permanece fixo em <strong>{formatNumber(activeData.model.bias)}</strong>.
             </p>
           </header>
 
           <div className="training-summary-grid">
-            <article className="training-summary-card"><span>modo</span><strong>Hebb simples</strong><small>sem taxa de aprendizagem</small></article>
+            <article className="training-summary-card"><span>modo</span><strong>Correção de erro</strong><small>supervisionado</small></article>
             <article className="training-summary-card"><span>entradas</span><strong>25</strong><small>w1...w25</small></article>
             <article className="training-summary-card"><span>bias fixo</span><strong>{formatNumber(activeData.model.bias)}</strong><small>somado em u</small></article>
-            <article className="training-summary-card"><span>passagem</span><strong>{activeData.model.epochs}</strong><small>uma vez pelo conjunto</small></article>
+            <article className="training-summary-card"><span>épocas</span><strong>{activeData.model.epochs}</strong><small>até convergir</small></article>
           </div>
 
           <div className="patterns-grid patterns-grid--main">
@@ -182,32 +161,17 @@ export function TheoryView({ content, activeData, predictions, weightsMatrix }: 
 
       <section className="theory-block">
         <header className="theory-block__header">
-          <span className="tag">treino Hebb</span>
+          <span className="tag">treino</span>
           <h3>Amostras usadas no treino</h3>
           <p>
-            O treino é mostrado como um único processo: X_Principal contribui primeiro e T_Principal contribui em seguida. Clique no card para abrir o passo a passo completo.
+            Estes dois cards representam as amostras de treino. Clique em qualquer uma delas para abrir o passo a passo completo das correções executadas.
           </p>
         </header>
 
-        {renderTrainingCompleteCard()}
-      </section>
-
-      {selection && (
-        <div className="sample-calculation-target" ref={detailsRef}>
-          {selectedTraining ? (
-            <TrainingStepDetails
-              sampleId="Treino completo Hebb"
-              steps={activeData?.model.trainingSteps ?? []}
-            />
-          ) : selectedPrediction ? (
-            <TrainingStepDetails
-              prediction={selectedPrediction}
-              sampleId={selectedPrediction.id}
-              steps={[]}
-            />
-          ) : null}
+        <div className="training-sample-card-grid">
+          {trainingPatterns.map((pattern) => renderTrainingMatrixCard(pattern))}
         </div>
-      )}
+      </section>
 
       <section className="theory-block">
         <header className="theory-block__header">
@@ -233,6 +197,23 @@ export function TheoryView({ content, activeData, predictions, weightsMatrix }: 
             </div>
           </section>
         </div>
+
+        {selection && (
+          <div className="sample-calculation-target" ref={detailsRef}>
+            {selectedTraining ? (
+              <TrainingStepDetails
+                sampleId="Treino completo"
+                steps={activeData?.model.trainingSteps ?? []}
+              />
+            ) : selectedPrediction ? (
+              <TrainingStepDetails
+                prediction={selectedPrediction}
+                sampleId={selectedPrediction.id}
+                steps={[]}
+              />
+            ) : null}
+          </div>
+        )}
       </section>
 
       {predictions.length > 0 && (

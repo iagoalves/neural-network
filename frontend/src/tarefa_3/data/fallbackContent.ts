@@ -1,23 +1,23 @@
 import type { LearningContent } from '../types/perceptron';
 
 export const fallbackContent: LearningContent = {
-  title: 'trabalho_3 · Regra de Hebb simples',
-  summary: 'Reconhecimento de X e T com matrizes 5x5, treinamento Hebb em uma passagem e verificação das amostras geradas por seed.',
+  title: 'trabalho_3 · Perceptron com correção de erro',
+  summary: 'Reconhecimento de X e T com matrizes 5x5, pesos inicializados em 0.001, bias fixo e atualização por erro.',
   theory: {
-    headline: 'Regra de Hebb simples aplicada ao reconhecimento de X e T',
-    intro: 'O exercício usa duas amostras de treino: X_Principal com y=1 e T_Principal com y=-1. Cada matriz 5x5 vira um vetor de 25 entradas.',
+    headline: 'Treinamento supervisionado com correção de erro',
+    intro: 'Cada matriz 5x5 vira um vetor com 25 entradas. O perceptron calcula u, compara ŷ com y e corrige os pesos quando há erro.',
     cards: [
-      { title: '1. Entradas', text: 'Cada célula da matriz vira uma entrada xi. Como a matriz é 5x5, o perceptron possui 25 entradas.' },
-      { title: '2. Treino', text: 'Os pesos começam em zero e acumulam as contribuições y·xi das duas amostras principais.' },
-      { title: '3. Hebb simples', text: 'A atualização é wi ← wi + y·xi. O valor de y define o sinal da contribuição: X usa y=1 e T usa y=-1. Não há taxa de aprendizagem e o bias não é atualizado.' },
-      { title: '4. Bias fixo', text: 'O bias não altera os pesos. Ele é somado ao final em u = b + Σ(xi·wi), deslocando a decisão para X ou T.' },
+      { title: '1. Entradas', text: 'Cada célula vira xi; a matriz 5x5 gera x1...x25.' },
+      { title: '2. Pesos iniciais', text: 'Todos os pesos começam em 0.001.' },
+      { title: '3. Correção', text: 'erro = y - ŷ; Δwi = erro·xi; wi ← wi + Δwi.' },
+      { title: '4. Bias', text: 'O bias é fixo e entra em u = b + Σ(xi·wi).' },
     ],
-    formula: 'Treino: wi ← wi + y·xi',
+    formula: 'Correção: Δwi = (y - ŷ)·xi; wi ← wi + Δwi',
     activation: 'Ativação: ŷ = 1 se u ≥ 0; ŷ = -1 se u < 0',
-    decisionLine: 'Classificação: u = b + Σ(xi·wi), com b fixo',
+    decisionLine: 'Classificação: u = b + Σ(xi·wi)',
   },
   program: {
     headline: 'Programa de classificação',
-    summary: 'Edite a matriz e execute o perceptron treinado pela Regra de Hebb simples.',
+    summary: 'Edite a matriz e execute o perceptron treinado por correção de erro.',
   },
 };
