@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import sys
-import unittest
 from pathlib import Path
 
 BACKEND_ROOT = Path(__file__).resolve().parents[1]
@@ -25,147 +24,164 @@ from app.main import (
 from app.tarefa_3.schemas import ManualPredictionRequestSchema, TrainPerceptronRequestSchema
 
 
-def build_matrix(fill: int = -1) -> list[list[int]]:
-    return [[fill for _ in range(5)] for _ in range(5)]
+def build_x_matrix() -> list[list[int]]:
+    return [
+        [1, -1, -1, -1, 1],
+        [-1, 1, -1, 1, -1],
+        [-1, -1, 1, -1, -1],
+        [-1, 1, -1, 1, -1],
+        [1, -1, -1, -1, 1],
+    ]
 
 
-class SchemaValidationTests(unittest.TestCase):
-    def test_train_request_schema_uses_defaults(self) -> None:
+class TestSchemaValidation:
+    def test_train_request_schema_uses_current_defaults(self) -> None:
         request = TrainPerceptronRequestSchema()
 
-        self.assertEqual(request.initialBias, 1)
-        self.assertEqual(request.mode, "hebb")
+        assert request.initialBias == 1
+        assert request.mode == "error_correction"
 
     def test_manual_prediction_schema_accepts_valid_matrix(self) -> None:
-        request = ManualPredictionRequestSchema(matrix=build_matrix(), target=1, identifier="manual")
+        request = ManualPredictionRequestSchema(matrix=build_x_matrix(), target=1, identifier="manual")
 
-        self.assertEqual(request.identifier, "manual")
-        self.assertEqual(request.target, 1)
+        assert request.identifier == "manual"
+        assert request.target == 1
 
     def test_manual_prediction_schema_rejects_invalid_shape(self) -> None:
-        with self.assertRaisesRegex(ValueError, "5x5"):
+        try:
             ManualPredictionRequestSchema(matrix=[[1, -1]], target=1, identifier="broken")
+        except ValueError as exc:
+            assert "5x5" in str(exc)
+        else:
+            raise AssertionError("Expected ValueError for invalid shape")
 
     def test_manual_prediction_schema_rejects_invalid_values(self) -> None:
-        matrix = build_matrix()
+        matrix = build_x_matrix()
         matrix[0][0] = 0
 
-        with self.assertRaisesRegex(ValueError, "apenas 1 e -1"):
+        try:
             ManualPredictionRequestSchema(matrix=matrix, target=1, identifier="broken")
+        except ValueError as exc:
+            assert "apenas 1 e -1" in str(exc)
+        else:
+            raise AssertionError("Expected ValueError for invalid values")
 
 
-class ApplicationServiceTests(unittest.TestCase):
-    def setUp(self) -> None:
+class TestApplicationService:
+    def setup_method(self) -> None:
         self.service = Tarefa3ApplicationService()
 
     def test_build_training_points_returns_principal_samples(self) -> None:
         points = self.service._build_training_points()
 
-        self.assertEqual(len(points), 2)
-        self.assertEqual(points[0].identifier, "X_Principal")
-        self.assertEqual(points[1].identifier, "T_Principal")
+        assert len(points) == 2
+        assert points[0].identifier == "X_Principal"
+        assert points[1].identifier == "T_Principal"
 
     def test_build_samples_returns_verification_set(self) -> None:
-        samples_payload = self.service._build_samples()
+        samples = self.service._build_samples()
 
-        self.assertGreaterEqual(len(samples_payload), 10)
+        assert len(samples) == 10
+        assert samples[0].identifier == "X_Principal"
+        assert samples[-1].identifier == "T4"
 
     def test_payload_from_samples_contains_model_samples_and_predictions(self) -> None:
         payload = self.service._payload_from_samples()
 
-        self.assertIn("model", payload)
-        self.assertIn("samples", payload)
-        self.assertIn("predictions", payload)
-        self.assertEqual(len(payload["samples"]), len(payload["predictions"]))
+        assert payload["model"]["trainingMode"] == "error_correction"
+        assert len(payload["samples"]) == 10
+        assert len(payload["predictions"]) == 10
+        assert payload["predictions"][0]["id"] == payload["samples"][0]["id"]
 
     def test_retrain_rebuilds_model_classifier_and_details(self) -> None:
         self.service.retrain(initial_bias=3)
 
-        self.assertEqual(self.service.model.bias, 3)
-        self.assertEqual(self.service.classifier.model.bias, 3)
-        self.assertEqual(len(self.service.detail_service.weights), 25)
+        assert self.service.model.bias == 3
+        assert self.service.classifier.model.bias == 3
+        assert len(self.service.detail_service.weights) == 25
 
-    def test_train_payload_retrains_and_returns_csv_and_message(self) -> None:
+    def test_train_payload_returns_current_message_and_csv(self) -> None:
         payload = self.service.train_payload(TrainPerceptronRequestSchema(initialBias=4))
 
-        self.assertEqual(payload["model"]["bias"], 4)
-        self.assertIn("trainingCsv", payload)
-        self.assertIn("Treino Hebb simples concluído", payload["message"])
+        assert payload["model"]["bias"] == 4
+        assert "trainingCsv" in payload
+        assert "correção de erro" in payload["message"]
+        assert "modelo_final,pesos_treinados" in payload["trainingCsv"]
 
     def test_prediction_payload_returns_details(self) -> None:
-        pattern = self.service.repository.pattern_x
+        payload = self.service.prediction_payload(self.service.repository.pattern_x)
 
-        payload = self.service.prediction_payload(pattern)
-
-        self.assertEqual(payload["id"], "X_Principal")
-        self.assertEqual(len(payload["details"]), 25)
-
-    def test_samples_payload_matches_sample_count(self) -> None:
-        payload = self.service.samples_payload()
-
-        self.assertEqual(len(payload["samples"]), len(payload["predictions"]))
+        assert payload["id"] == "X_Principal"
+        assert len(payload["details"]) == 25
+        assert payload["predictedLabel"] in {"X", "T"}
 
     def test_predict_manual_builds_transient_pattern(self) -> None:
-        payload = self.service.predict_manual(ManualPredictionRequestSchema(matrix=build_matrix(), target=1, identifier="manual"))
+        payload = self.service.predict_manual(
+            ManualPredictionRequestSchema(matrix=build_x_matrix(), target=1, identifier="manual")
+        )
 
-        self.assertEqual(payload["id"], "manual")
-        self.assertEqual(payload["expectedLabel"], "X")
+        assert payload["id"] == "manual"
+        assert payload["expectedLabel"] == "X"
+        assert len(payload["details"]) == 25
 
     def test_csv_helpers_return_expected_sections(self) -> None:
-        self.assertIn("id,classe,y,linha", self.service.patterns_csv())
-        self.assertIn("modelo_final,pesos_treinados", self.service.training_csv())
-        self.assertIn("id,esperado,predito", self.service.predictions_csv())
-        self.assertIn("X1", self.service.samples_csv())
+        assert "id,classe,y,linha" in self.service.patterns_csv()
+        assert "passo_correcao_erro" in self.service.training_csv()
+        assert "id,esperado,predito" in self.service.predictions_csv()
+        assert "X1" in self.service.samples_csv()
 
 
-class RouteFunctionTests(unittest.TestCase):
+class TestRouteFunctions:
     def test_health_function(self) -> None:
-        self.assertEqual(health()["ok"], True)
+        payload = health()
+
+        assert payload["ok"] is True
+        assert payload["runtime"] == "fastapi-pydantic-python-3.14"
 
     def test_learning_content_function(self) -> None:
-        self.assertIn("theory", learning_content())
+        payload = learning_content()
 
-    def test_patterns_function(self) -> None:
-        self.assertEqual(len(patterns()["patterns"]), 2)
+        assert "theory" in payload
+        assert "correção de erro" in payload["summary"]
 
-    def test_samples_function(self) -> None:
-        payload = samples()
+    def test_patterns_and_samples_functions(self) -> None:
+        patterns_payload = patterns()
+        samples_payload = samples()
 
-        self.assertEqual(len(payload["samples"]), len(payload["predictions"]))
+        assert len(patterns_payload["patterns"]) == 2
+        assert len(samples_payload["samples"]) == 10
+        assert len(samples_payload["predictions"]) == 10
 
     def test_train_function(self) -> None:
-        payload = train(TrainPerceptronRequestSchema(initialBias=2))
+        payload = train(TrainPerceptronRequestSchema(initialBias=2, mode="error_correction"))
 
-        self.assertEqual(payload["model"]["bias"], 2)
+        assert payload["model"]["bias"] == 2
+        assert payload["model"]["trainingMode"] == "error_correction"
 
     def test_predict_function(self) -> None:
-        payload = predict(ManualPredictionRequestSchema(matrix=build_matrix(), target=1, identifier="manual"))
+        payload = predict(ManualPredictionRequestSchema(matrix=build_x_matrix(), target=1, identifier="manual"))
 
-        self.assertEqual(payload["id"], "manual")
+        assert payload["id"] == "manual"
+        assert payload["expectedLabel"] == "X"
+        assert len(payload["details"]) == 25
 
     def test_csv_route_functions(self) -> None:
-        self.assertIn("text/csv", csv_patterns().media_type)
-        self.assertIn("text/csv", csv_training().media_type)
-        self.assertIn("text/csv", csv_samples().media_type)
-        self.assertIn("text/csv", csv_predictions().media_type)
+        for response in (csv_patterns(), csv_training(), csv_samples(), csv_predictions()):
+            assert response.media_type == "text/csv; charset=utf-8"
 
 
-class AppConfigurationTests(unittest.TestCase):
-    def test_fastapi_app_metadata_and_routes(self) -> None:
+class TestAppConfiguration:
+    def test_fastapi_metadata_and_routes(self) -> None:
         paths = {route.path for route in app.routes}
 
-        self.assertEqual(app.title, "trabalho_3 - Perceptron X/T com Hebb simples")
-        self.assertIn("/api/health", paths)
-        self.assertIn("/api/learning-content", paths)
-        self.assertIn("/api/patterns", paths)
-        self.assertIn("/api/samples", paths)
-        self.assertIn("/api/train", paths)
-        self.assertIn("/api/predict", paths)
-        self.assertIn("/api/csv/patterns", paths)
-        self.assertIn("/api/csv/training", paths)
-        self.assertIn("/api/csv/samples", paths)
-        self.assertIn("/api/csv/predictions", paths)
-
-
-if __name__ == "__main__":
-    unittest.main()
+        assert app.title == "trabalho_3 - Perceptron X/T com correção de erro"
+        assert "/api/health" in paths
+        assert "/api/learning-content" in paths
+        assert "/api/patterns" in paths
+        assert "/api/samples" in paths
+        assert "/api/train" in paths
+        assert "/api/predict" in paths
+        assert "/api/csv/patterns" in paths
+        assert "/api/csv/training" in paths
+        assert "/api/csv/samples" in paths
+        assert "/api/csv/predictions" in paths

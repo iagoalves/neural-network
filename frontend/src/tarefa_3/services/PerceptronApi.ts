@@ -8,7 +8,7 @@ import type {
   TrainPerceptronResponse,
 } from '../types/perceptron';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8787';
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/+$/, '');
 
 export class PerceptronApi {
   async getLearningContent(): Promise<LearningContent> {
@@ -20,7 +20,7 @@ export class PerceptronApi {
   }
 
   async train(request: TrainPerceptronRequest): Promise<TrainPerceptronResponse> {
-    const response = await fetch(`${API_BASE_URL}/api/train`, {
+    const response = await fetch(this.buildUrl('/api/train'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(request),
@@ -34,7 +34,7 @@ export class PerceptronApi {
   }
 
   async predict(matrix: Matrix5x5, target: TargetValue = 1): Promise<PredictionResult> {
-    const response = await fetch(`${API_BASE_URL}/api/predict`, {
+    const response = await fetch(this.buildUrl('/api/predict'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ matrix, target, identifier: 'Entrada_Manual' }),
@@ -48,7 +48,7 @@ export class PerceptronApi {
   }
 
   async getCsv(kind: 'patterns' | 'samples' | 'training' | 'predictions'): Promise<string> {
-    const response = await fetch(`${API_BASE_URL}/api/csv/${kind}`);
+    const response = await fetch(this.buildUrl(`/api/csv/${kind}`));
 
     if (!response.ok) {
       throw new Error('Falha ao carregar CSV.');
@@ -58,7 +58,7 @@ export class PerceptronApi {
   }
 
   private async getJson<T>(path: string): Promise<T> {
-    const response = await fetch(`${API_BASE_URL}${path}`);
+    const response = await fetch(this.buildUrl(path));
 
     if (!response.ok) {
       throw new Error(`Falha ao carregar ${path}.`);
@@ -89,5 +89,9 @@ export class PerceptronApi {
     }
 
     return fallback;
+  }
+
+  private buildUrl(path: string): string {
+    return API_BASE_URL ? `${API_BASE_URL}${path}` : path;
   }
 }

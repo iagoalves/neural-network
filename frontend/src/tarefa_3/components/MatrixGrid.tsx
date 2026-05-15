@@ -5,25 +5,34 @@ interface MatrixGridProps {
   readonly subtitle?: string;
   readonly matrix: number[][];
   readonly compact?: boolean;
+  readonly precision?: number;
   readonly onClick?: () => void;
   readonly selected?: boolean;
   readonly hint?: string;
 }
 
-export function MatrixGrid({ title, subtitle, matrix, compact = false, onClick, selected = false, hint }: MatrixGridProps) {
+export function MatrixGrid({ title, subtitle, matrix, compact = false, precision = 3, onClick, selected = false, hint }: MatrixGridProps) {
+  const hasDecimalValues = matrix.some((row) => row.some((value) => ![-1, 0, 1].includes(value)));
   const cells = matrix.flatMap((row, rowIndex) =>
     row.map((value, colIndex) => (
       <span
-        className={value > 0 ? 'matrix-cell matrix-cell--positive' : value < 0 ? 'matrix-cell matrix-cell--negative' : 'matrix-cell matrix-cell--zero'}
+        className={[
+          'matrix-cell',
+          hasDecimalValues ? 'matrix-cell--decimal' : '',
+          value > 0 ? 'matrix-cell--positive' : value < 0 ? 'matrix-cell--negative' : 'matrix-cell--zero',
+        ]
+          .filter(Boolean)
+          .join(' ')}
         key={`${title}-${rowIndex}-${colIndex}`}
       >
-        {formatNumber(value)}
+        {formatNumber(value, precision)}
       </span>
     )),
   );
 
   const cardClassName = [
     compact ? 'matrix-card matrix-card--compact' : 'matrix-card',
+    hasDecimalValues ? 'matrix-card--decimal' : '',
     onClick ? 'matrix-card--interactive' : '',
     selected ? 'matrix-card--selected' : '',
   ]

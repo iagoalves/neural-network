@@ -7,9 +7,11 @@
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:backend": "cd backend && python -m app.main",
     "dev:frontend": "cd frontend && npm run dev",
-    "install:all": "npm install && cd frontend && npm install",
-    "docker:up": "docker compose up --build",
-    "docker:down": "docker compose down"
+    "install:all": "npm install && npm --prefix frontend install",
+    "docker:up": "docker compose down --remove-orphans && docker compose up --build -d && echo \"Frontend de desenvolvimento: http://localhost:5173\" && echo \"Backend de desenvolvimento: http://localhost:8787/api/health\" && docker compose logs -f",
+    "docker:down": "docker compose down --remove-orphans",
+    "docker:prod:up": "docker compose -f docker-compose.prod.yml up --build -d && echo \"Frontend de produção: http://localhost:5173\" && echo \"Health da API via proxy: http://localhost:5173/api/health\" && docker compose -f docker-compose.prod.yml logs -f",
+    "docker:prod:down": "docker compose -f docker-compose.prod.yml down --remove-orphans"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

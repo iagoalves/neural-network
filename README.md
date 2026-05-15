@@ -28,11 +28,23 @@ npm install
 npm run dev
 ```
 
-Docker:
+O Vite em desenvolvimento usa proxy para o backend em `/api`, então nao e necessario definir `VITE_API_BASE_URL` para rodar localmente.
+
+Docker desenvolvimento:
 
 ```bash
 docker compose up --build
 ```
+
+Nesse modo, o frontend roda com Vite em hot reload em `http://localhost:5173` e o backend roda com `uvicorn --reload` em `http://localhost:8787`. As portas ficam publicadas apenas em `127.0.0.1`.
+
+Docker producao:
+
+```bash
+docker compose -f docker-compose.prod.yml up --build -d
+```
+
+Nesse modo, o frontend e buildado com Vite e servido por `nginx` em `http://localhost:5173`. O backend fica acessivel internamente no Compose e pode ser verificado externamente pelo proxy em `http://localhost:5173/api/health`.
 
 ## Dados
 

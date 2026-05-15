@@ -44,8 +44,8 @@ export function ScoreCard({ prediction }: ScoreCardProps) {
 
         <div className="score-card__matrix-comparison">
           <MatrixGrid compact title="Entrada x" subtitle="x1...x25" matrix={prediction.pattern.matrix} />
-          <MatrixGrid compact title="Pesos w" subtitle="w1...w25" matrix={prediction.weightsMatrix} />
-          <MatrixGrid compact title="Produtos" subtitle="xi × wi" matrix={prediction.contributionsMatrix} />
+          <MatrixGrid compact title="Pesos w" subtitle="w1...w25" matrix={prediction.weightsMatrix} precision={8} />
+          <MatrixGrid compact title="Produtos" subtitle="xi × wi" matrix={prediction.contributionsMatrix} precision={8} />
         </div>
 
         <div className="score-card__steps" aria-label="Cálculo detalhado de xi vezes wi">

@@ -130,9 +130,9 @@ export function TrainingStepDetails({ sampleId, steps, prediction }: TrainingSte
             <div className="training-step-details__content">
               <div className="training-step-matrices">
                 <MatrixGrid compact title="Entrada x" subtitle="x1...x25" matrix={toMatrix(step.features)} />
-                <MatrixGrid compact title="Pesos antes" subtitle="w antes" matrix={toMatrix(step.weightsBefore)} />
-                <MatrixGrid compact title="Correção Δw" subtitle="erro·x" matrix={toMatrix(step.deltaWeights)} />
-                <MatrixGrid compact title="Pesos depois" subtitle="w depois" matrix={toMatrix(step.weightsAfter)} />
+                <MatrixGrid compact title="Pesos antes" subtitle="w antes" matrix={toMatrix(step.weightsBefore)} precision={8} />
+                <MatrixGrid compact title="Correção Δw" subtitle="erro·x" matrix={toMatrix(step.deltaWeights)} precision={8} />
+                <MatrixGrid compact title="Pesos depois" subtitle="w depois" matrix={toMatrix(step.weightsAfter)} precision={8} />
               </div>
 
               <div className="training-step-list" aria-label="Detalhamento da correção dos pesos">

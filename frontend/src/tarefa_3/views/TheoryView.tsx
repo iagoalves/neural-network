@@ -154,7 +154,7 @@ export function TheoryView({ content, activeData, predictions, weightsMatrix }: 
           </div>
 
           <div className="patterns-grid patterns-grid--main">
-            <MatrixGrid title="Pesos treinados" subtitle="w1...w25" matrix={weightsMatrix} />
+            <MatrixGrid title="Pesos treinados" subtitle="w1...w25" matrix={weightsMatrix} precision={8} />
           </div>
         </section>
       )}

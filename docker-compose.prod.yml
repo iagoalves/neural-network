@@ -1,0 +1,27 @@
+services:
+  backend:
+    image: neural-network-backend-prod
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: perceptron_xt_backend
+    healthcheck:
+      test: ["CMD", "python", "-c", "from urllib.request import urlopen; urlopen('http://127.0.0.1:8787/api/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+  frontend:
+    image: neural-network-frontend-prod
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: perceptron_xt_frontend
+    ports:
+      - "127.0.0.1:5173:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
